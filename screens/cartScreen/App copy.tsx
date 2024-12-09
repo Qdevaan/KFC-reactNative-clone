@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigation } from '@react-navigation/native';
+
 import {
   SafeAreaView,
   ScrollView,
@@ -11,6 +13,7 @@ import {
   FlatList,
   Alert,
   Animated,
+  ToastAndroid,
 } from 'react-native';
 import CartItem from './CartItem';
 import RecommendationCard from './RecommendationCard';
@@ -18,8 +21,19 @@ import Header from './Header';
 import BottomBar from './BottomBar';
 import { CartProvider, useCart } from './CartContext';
 import cartData from './data.json';
+import { Navigation } from 'lucide-react';
+
+export default function App() {
+
+  return (
+    <CartProvider>
+      <CartScreen />
+    </CartProvider>
+  );
+}
 
 function CartScreen() {
+  const navigation = useNavigation();
   const { cartItems, updateQuantity, removeItem, addToCart } = useCart();
   const [recommendations, setRecommendations] = useState(cartData.recommendations);
   const [lastAddedItem, setLastAddedItem] = useState(null);
@@ -91,7 +105,7 @@ function CartScreen() {
           placeholderTextColor="#666"
         />
 
-        <TouchableOpacity style={styles.exploreMenu}>
+        <TouchableOpacity style={styles.exploreMenu} onPress={() => navigation.navigate('Menu')}>
           <View style={styles.exploreContent}>
             <View>
               <Text style={styles.exploreTitle}>Explore Menu</Text>
@@ -148,13 +162,6 @@ function CartScreen() {
   );
 }
 
-export default function App() {
-  return (
-    <CartProvider>
-      <CartScreen />
-    </CartProvider>
-  );
-}
 
 const styles = StyleSheet.create({
   container: {

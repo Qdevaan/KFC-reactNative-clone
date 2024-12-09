@@ -17,7 +17,7 @@ export default function TopDealCard({ name, price, image }: TopDealCardProps) {
       <Image source={{ uri: image }} style={styles.image} />
       <View style={styles.content}>
         <Text style={styles.name}>{name}</Text>
-        <Text style={styles.price}>{price}</Text>
+        <Text style={styles.price}>PKR:{price}</Text>
         {/* <TouchableOpacity style={styles.viewButton}>
           <Text style={styles.viewButtonText}>VIEW</Text>
         </TouchableOpacity> */}
@@ -33,11 +33,11 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "auto" ,
     backgroundColor: 'white',
-    borderRadius: 8,
-    borderWidth: 2,
+    borderRadius: 3,
+    borderWidth: 1,
     
-    padding: 16,
-    marginRight: 16,
+    padding: 12,
+    marginRight: 6,
     
     flexDirection: 'row',
     borderStyle: 'dotted',
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     color: '#dc2626',
     marginTop: 4,
     marginBottom: 8,
+    marginLeft: -10,
     position: 'absolute',
     bottom: -10,
   },
@@ -85,6 +86,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 4,
     top: 80,
+    // marginRight: -10,
     alignSelf: 'flex-end',
     position: 'absolute',
     color: '#dc2626',

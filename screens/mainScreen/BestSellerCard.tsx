@@ -19,15 +19,15 @@ export default function BestSellerCard({ name, price, image }: BestSellerCardPro
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 8,
-    paddingRight: 8,
+    // paddingHorizontal: 8,
+    // paddingRight: 8,
     width: 130,
     height: 190,
     backgroundColor: 'white',
-    borderRadius: 8,
-    borderWidth: 2,
+    borderRadius: 3,
+    borderWidth: 1,
     padding: 8,
-    marginRight: 8,
+    marginRight: 6,
     borderStyle: 'dotted',
     borderColor: '#3b3939',
     position: 'relative',

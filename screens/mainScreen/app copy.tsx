@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   sectionTitle: {
-    paddingLeft: 16,
+    paddingLeft: 12,
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 6,
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   reorderButton: {
     backgroundColor: '#dc2626',
     padding: 10,
-    borderRadius: 8,
+    borderRadius: 3,
     marginHorizontal: 6,
     marginBottom: 6,
   },
@@ -348,42 +348,57 @@ const styles = StyleSheet.create({
   container2: {
     flex: 0.5,
     backgroundColor: "white", // Black background
-    padding: 8,
+    // padding: 8,
     borderStyle: 'dotted',
     borderColor: 'grey',
     flexDirection: "row",
     justifyContent: "space-between",
+    paddingBottom: -5,
     },
     singleCardView: {
     flex: 1,
+    marginRight: 3,
+    paddingTop: 5,
+    marginLeft:2,
+    
     justifyContent: "center",
     alignItems: "center",
     borderStyle: 'dotted',
     borderColor: 'grey',
     height: '100%',
-    paddingBottom: 8,
+    // paddingBottom: 8,
+    paddingBottom: -5,
+
     },
     doubleCardView: {
+    paddingTop:5,
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",
-    marginBottom: 8,
-    marginLeft: 6,
+    // marginBottom: 8,
+    // marginLeft: 6,
     borderStyle: 'dotted',
     borderColor: 'grey',
+    // paddingBottom: -5,
+    // paddingRight: -5,
+    marginRight: -5,
+    marginLeft: 5,
+
     },
     card: {
-    backgroundColor: "white",
+    // backgroundColor: "white",
     flex: 1,
     width: "95%", // Adjust size to fit two per row
-    marginVertical: 5,
-    borderRadius: 10,
+    marginBottom: 5,
+    marginHorizontal: -5,
+    paddingHorizontal: -5,
+    borderRadius: 3,
     alignItems: "center",
     //paddingRight: 10,
     borderStyle: 'dotted',
     borderColor: 'grey',
-    borderWidth: 2,
-    justifyContent: 'flex-end', // Ensure image is at the bottom
+    borderWidth: 1,
+    // justifyContent: 'flex-end', // Ensure image is at the bottom
     // justifyContent: 'flex-start', // Ensure text is at the top
     },
     image: {
