@@ -1,0 +1,28 @@
+{
+    "cartItems": [
+      
+    ],
+    "recommendations": [
+      {
+       "id": 100,
+      "name": "Krunch Burger",
+      "price": 310,
+      "image": "https://www.kfcpakistan.com/images/b438e990-bc23-11ee-be0d-ed0e61ce8a3a-Untitleddesign(5)-min_variant_0-2024-01-26082002.png",
+      "description": "Zinger fillet, lettuce, mayo, and a soft sesame bun."
+    },
+      {
+        "id": 300,
+        "name": "Crispy Box",
+        "price": 750,
+        "image": "https://www.kfcpakistan.com/images/63fb28b0-9627-11ef-b420-51a55a9d1dbc-CrispyBox-2024-10-29185539.png",
+        "description": "1 Zinger Burger + 1 Piece Chicken + 1 Fries + 1 Drink + 1 Coleslaw"},
+      {
+        "id": 600,
+        "name": "Fries",
+        "price": 270,
+        "image": "https://www.kfcpakistan.com/images/62153aa0-0513-11ee-8eee-c7aabf77bad4-RegularFries-2023-06-07091210.png",
+        "description": "Crispy and delicious French fries."
+      }
+      
+    ]
+  }

@@ -1,0 +1,77 @@
+{
+  "location": "Shahbaz",
+  "categories": ["Everyday Value", "Ala-Carte-&-Combos", "Signature-Boxes","Promotions",  "Sharing", "Snacks-&-Beverages"],
+  "everydayvalueitems": [
+    {
+      "id": 100,
+      "name": "Krunch Burger",
+      "description": "Krunch fillet, spicy mayo, lettuce, sandwiched between a sesame seed bun",
+      "price": 310,
+      "image": "https://www.kfcpakistan.com/images/b438e990-bc23-11ee-be0d-ed0e61ce8a3a-Untitleddesign(5)-min_variant_0-2024-01-26082002.png"
+    }
+    
+  ],
+  "alacartecombositems": [
+    {
+      "id": 200,
+      "name": "Zinger Burger",
+      "description": "Zinger fillet, signature mayo, lettuce, sandwiched between a sesame seed bun",
+      "price": 550,
+      "image": "https://www.kfcpakistan.com/images/afc4e8b0-ff99-11ed-8640-872ee63b5da0-alacart-2023-05-31095826.png"
+    }
+   
+  ],
+  "signatureboxesitems": [
+    {
+      "id": 300,
+      "name": "Crispy Box",
+      "description": "2 pieces Hot & Crispy Chicken, 1 regular fries, 1 regular drink",
+      "price": 650,
+      "image": "https://www.kfcpakistan.com/images/afc536d0-ff99-11ed-a006-17c81341cbe8-Signaturebox-2023-05-31095826.png"
+    }
+  ],
+  "promotionsitems": [
+    {
+      "id": 400,
+      "name": "Family Festival",
+      "description": "4 Zinger burgers, 4 pieces Hot & Crispy Chicken, 2 dinner rolls, 1.5L drink",
+      "price": 2450,
+      "image": "https://www.kfcpakistan.com/images/a9b4fb90-8d82-11ef-ae4a-7712e9c1a6fb-Thumbnail590x4802copy-2024-10-18185620.png"
+    }
+  ],
+  "sharingitems": [
+    {
+      "id": 500,
+      "name": "Bucket for Two",
+      "description": "9 pieces Hot & Crispy Chicken, 1 large fries, 1 large coleslaw, 2 regular drinks",
+      "price": 1450,
+      "image": "https://www.kfcpakistan.com/images/afc4e8b0-ff99-11ed-8640-872ee63b5da0-Sharing-2023-05-31095826.png"
+    }
+  ],
+  "snacksbeveragesitems": [
+    {
+      "id": 600,
+      "name": "Regular Fries",
+      "description": "Crispy, golden fries",
+      "price": 190,
+      "image": "https://www.kfcpakistan.com/images/43a9fb50-ffaa-11ed-8180-812e571998fe-RegularFries_variant_0-2023-05-31115706.png"
+    },
+    {
+      "id": 700,
+      "name": "Pepsi Regular",
+      "description": "Refreshing Pepsi",
+      "price": 140,
+      "image": "https://www.kfcpakistan.com/images/fea54530-3eed-11ef-b424-552aa36b144a-Pepsi-345ml_variant_0-2024-07-10185537.png"
+    }
+  ],
+  "midnightitems": [
+    {
+      "id": 800,
+      "name": "Midnight Deal",
+      "description": "1 Zinger burger, 1 regular fries, 1 regular drink",
+      "price": 600,
+      "image": "https://www.kfcpakistan.com/images/afc4e8b0-ff99-11ed-8640-872ee63b5da0-Snacks-2023-05-31095826.png"
+    }
+  ]
+}
+
