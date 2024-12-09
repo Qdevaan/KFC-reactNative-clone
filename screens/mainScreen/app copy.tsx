@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
   },
   container2: {
     flex: 0.5,
-    backgroundColor: "white", // Black background
+    // backgroundColor: "white", // Black background
     // padding: 8,
     borderStyle: 'dotted',
     borderColor: 'grey',
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
     marginTop: 'auto', // Push image to the bottom
     },
     title: {
-    color: "black", // White text
+    // color: "black", // White text
     fontSize: 16,
     textAlign: "center",
     marginTop: 10,

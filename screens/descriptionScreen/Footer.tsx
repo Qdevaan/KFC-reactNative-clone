@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ToastAndroid, TouchableOpacity, StyleSheet } from 'react-native';
 
 type FooterProps = {
   quantity: number;
@@ -7,6 +7,9 @@ type FooterProps = {
   onDecreaseQuantity: () => void;
   onIncreaseQuantity: () => void;
   onAddToBucket: () => void;
+};
+const showToast = (message: string) => {
+  ToastAndroid.show(message, ToastAndroid.SHORT);
 };
 
 export const Footer: React.FC<FooterProps> = ({
@@ -28,7 +31,7 @@ export const Footer: React.FC<FooterProps> = ({
     </View>
     <View style={styles.addToBucketContainer}>
       <Text style={styles.priceText}>Rs {totalPrice}</Text>
-      <TouchableOpacity style={styles.addToBucketButton} onPress={onAddToBucket}>
+      <TouchableOpacity style={styles.addToBucketButton} onPress={() => { onAddToBucket(); showToast('Added to Bucket'); }}>
         <Text style={styles.addToBucketText}>ADD TO BUCKET</Text>
         <Text style={styles.arrowText}>≫</Text>
       </TouchableOpacity>

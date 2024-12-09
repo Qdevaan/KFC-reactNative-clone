@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "auto" ,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     borderRadius: 3,
     borderWidth: 1,
     
@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
     color: '#1f2937',
   },
   price: {
-    fontSize: 14,
-    color: '#dc2626',
+    fontSize: 11,
+    color: 'black',
     marginTop: 4,
     marginBottom: 8,
     marginLeft: -10,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     borderColor: '#dc2626',
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderRadius: 4,
+    borderRadius: 2,
     top: 80,
     alignSelf: 'flex-end',
     position: 'absolute',

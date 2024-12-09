@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, ToastAndroid, TouchableOpacity, StyleSheet } from 'react-native';
 
 interface MenuItemProps {
   name: string;
@@ -11,6 +11,9 @@ interface MenuItemProps {
   onToggleFavorite: () => void;
   isFavorite: boolean;
 }
+const showToast = (message: string) => {
+  ToastAndroid.show(message, ToastAndroid.SHORT);
+};
 
 const MenuItem: React.FC<MenuItemProps> = ({ 
   name, 
@@ -49,6 +52,10 @@ const MenuItem: React.FC<MenuItemProps> = ({
           <TouchableOpacity 
             style={styles.addButton} 
             onPress={onAddToBucket}
+            onPress={() => {
+              showToast('Added to Bucket');
+              onAddToBucket();
+            }}
             accessibilityLabel="Add to bucket"
           >
             <Text style={styles.addButtonText}>ADD TO BUCKET</Text>
