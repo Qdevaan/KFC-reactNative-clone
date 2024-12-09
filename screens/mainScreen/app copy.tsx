@@ -80,7 +80,8 @@ export default function KFCHome() {
       {/* Header */}
       <View style={styles.header2}>
         <View style={styles.headerLeft}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => showToast('Menu clicked')}>
+            
             <Ionicons name="menu" size={24} color="black" />
           </TouchableOpacity>
           <View style={styles.locationContainer}>
@@ -96,7 +97,7 @@ export default function KFCHome() {
             source={require('../assets/KFClogo.png')} 
             style={styles.logo2}
           />
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => showToast('Search clicked')}>
             <Ionicons name="search" size={24} color="black" />
           </TouchableOpacity>
         </View>
