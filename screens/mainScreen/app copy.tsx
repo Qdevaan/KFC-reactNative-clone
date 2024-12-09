@@ -1,73 +1,13 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, ScrollView,ToastAndroid, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'react-native';
-import { Svg, Path, Circle, Line } from 'react-native-svg';
-//import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-//import data from '../data.json';
-
 import PromotionCard from './PromotionCard';
-import MenuCategoryCard from './MenuCategoryCard';
 import BestSellerCard from './BestSellerCard';
 import TopDealCard from './TopDealCard';
 import DeliveryToggle from './DeliveryToggle';
+import data from './data.json';
 
-// Assume this data is imported from a JSON file
-const data = {
-  promotions: [
-    { id: 1, image: "https://www.kfcpakistan.com/images/7e703860-8c0a-11ef-96ca-83eb584d9244-WebBanner1675x600_desktop_image-2024-10-16220337.jpg"},
-    { id: 2, image: "https://www.kfcpakistan.com/images/65d4ad90-8cb9-11ef-ac1f-b1915cbd0455-Web-banner-1675x600_desktop_image-2024-10-17185537.jpg" },
-    { id: 3, image: "https://www.kfcpakistan.com/images/a9fd6850-8d58-11ef-8691-e5253fef787b-Web-banner-1675x600_desktop_image-2024-10-18135542.jpg" },
-  ],
-  menuCategories: [
-    { id: 1, name: "Everyday Value", image: "https://kfcpakistan.com/images/43a9fb50-ffaa-11ed-8180-812e571998fe-EVMSection-Tile-2023-05-31115706.png" },
-    { id: 2, name: "Ala-Carte-&-Combos", image: "https://kfcpakistan.com/images/43a9fb50-ffaa-11ed-8180-812e571998fe-Chicken-Bucket-2023-05-31115706.png" },
-    { id: 3, name: "Signature-Boxes", image: "https://kfcpakistan.com/images/43a9fb50-ffaa-11ed-8180-812e571998fe-Sharing-2023-05-31115706.png" },
-    { id: 4, name: "Sharing", image: "https://kfcpakistan.com/images/43a9fb50-ffaa-11ed-8180-812e571998fe-Snacks-2023-05-31115706.png" },
-    { id: 5, name: "Snacks & Beverages", image: "https://kfcpakistan.com/images/43a9fb50-ffaa-11ed-8180-812e571998fe-Midnight-2023-05-31115706.png" },
-  ],
-  bestSellers: [
-    { id: 100, name: "Krunch Burger", price: "Rs 310", image: "https://www.kfcpakistan.com/images/b438e990-bc23-11ee-be0d-ed0e61ce8a3a-Untitleddesign(5)-min_variant_0-2024-01-26082002.png" },
-    { id: 200, name: "Zinger Burger", price: "Rs 550", image: "https://www.kfcpakistan.com/images/33685b40-0461-11ee-911c-497570899609-Mighty_variant_0-2023-06-06115641.png" },
-    { id: 300, name: "Crispy Box", price: "Rs 650", image: "https://www.kfcpakistan.com/images/afc536d0-ff99-11ed-a006-17c81341cbe8-Signaturebox-2023-05-31095826.png"},
-  ],
-  topDeals: [
-    { id: 400,
-      name: "Family Festival",
-      description: "4 Zinger burgers, 4 pieces Hot & Crispy Chicken, 2 dinner rolls, 1.5L drink",
-      price: 2450,
-      image: "https://www.kfcpakistan.com/images/a9b4fb90-8d82-11ef-ae4a-7712e9c1a6fb-Thumbnail590x4802copy-2024-10-18185620.png"},
-    
-      {
-        id: 500,
-        name: "Bucket for Two",
-        description: "9 pieces Hot & Crispy Chicken, 1 large fries, 1 large coleslaw, 2 regular drinks",
-        price: 1450,
-        image: "https://www.kfcpakistan.com/images/afc4e8b0-ff99-11ed-8640-872ee63b5da0-Sharing-2023-05-31095826.png"
-      },
-      {
-        id: 100,
-        name: "Krunch Burger",
-        description: "Krunch fillet, spicy mayo, lettuce, sandwiched between a sesame seed bun",
-        price: 310,
-        image: "https://www.kfcpakistan.com/images/b438e990-bc23-11ee-be0d-ed0e61ce8a3a-Untitleddesign(5)-min_variant_0-2024-01-26082002.png"
-      },{
-        id: 200,
-        name: "Zinger Burger",
-        description: "Zinger fillet, signature mayo, lettuce, sandwiched between a sesame seed bun",
-        price: 550,
-        image: "https://www.kfcpakistan.com/images/afc4e8b0-ff99-11ed-8640-872ee63b5da0-alacart-2023-05-31095826.png"
-      }
-    ],
-  
-    cards: [
-      { id: 1, title: "Everyday Value", image: require("../assets/everyday.png") },
-      { id: 2, title: "Ala-Carte-&-Combos", image: require("../assets/combo.png") },
-      { id: 3, title: "Signature-Boxes", image: require("../assets/boxes.png") },
-      { id: 4, title: "Promotion", image: require("../assets/promo.png") },
-      { id: 5, title: "Sharing", image: require("../assets/sharing.png") },
-    ],
-};
 
 export default function KFCHome() {
   const navigation = useNavigation();
@@ -136,31 +76,47 @@ export default function KFCHome() {
           <View style={[styles.container2, { flex: 0.1 }]}>
             {/* View 1: Main Card */}
             <View style={styles.singleCardView}>
-              <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Menu')}>
-                <Text style={styles.title}>{data.cards[0].title}</Text>
-                <Image source={data.cards[0].image} style={styles.image} />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Menu')}>
+            <Text style={styles.title}>{data.cards[0].title}</Text>
+            <Image source={{ uri: data.cards[0].image }} style={styles.image} />
+          </TouchableOpacity>
+</View>
 
             {/* View 2: Two data.cards */}
-            <View style={styles.doubleCardView}>
-              {data.cards.slice(1, 3).map((card) => (
-                <TouchableOpacity key={card.id} style={styles.card} onPress={() => { navigation.navigate('Menu', { categoryId: card.id }); console.log(`Clicked on card ${card.id}`); }}>
-                  <Text style={styles.title}>{card.title}</Text>
-                  <Image source={card.image} style={styles.image} />
-                </TouchableOpacity>
-              ))}
-            </View>
+            {/* View 2: Two data.cards (Slice 1 to 3) */}
+<View style={styles.doubleCardView}>
+  {data.cards.slice(1, 3).map((card) => (
+    <TouchableOpacity
+      key={card.id}
+      style={styles.card}
+      onPress={() => {
+        navigation.navigate('Menu', { categoryId: card.id });
+        console.log(`Clicked on card ${card.id}`);
+      }}
+    >
+      <Text style={styles.title}>{card.title}</Text>
+      <Image source={{ uri: card.image }} style={styles.image} />
+    </TouchableOpacity>
+  ))}
+</View>
 
-            {/* View 3: Two data.cards */}
-            <View style={styles.doubleCardView}>
-              {data.cards.slice(3).map((card) => (
-                <TouchableOpacity key={card.id} style={styles.card} onPress={() => { navigation.navigate('Menu', { categoryId: card.id }); console.log(`Clicked on card ${card.id}`); }}>
-                  <Text style={styles.title}>{card.title}</Text>
-                  <Image source={card.image} style={styles.image} />
-                </TouchableOpacity>
-              ))}
-            </View>
+{/* View 3: Two data.cards (Slice 3 onward) */}
+<View style={styles.doubleCardView}>
+  {data.cards.slice(3).map((card) => (
+    <TouchableOpacity
+      key={card.id}
+      style={styles.card}
+      onPress={() => {
+        navigation.navigate('Menu', { categoryId: card.id });
+        console.log(`Clicked on card ${card.id}`);
+      }}
+    >
+      <Text style={styles.title}>{card.title}</Text>
+      <Image source={{ uri: card.image }} style={styles.image} />
+    </TouchableOpacity>
+  ))}
+</View>
+
           </View>
         </View>
 

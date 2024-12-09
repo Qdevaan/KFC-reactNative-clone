@@ -5,9 +5,10 @@ type TopDealCardProps = {
   name: string;
   price: string;
   image: string;
+  description: string;
 };
 
-export default function TopDealCard({ name, price, image }: TopDealCardProps) {
+export default function TopDealCard({ name, price, image, description }: TopDealCardProps) {
   const showToast = (message) => {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   };
