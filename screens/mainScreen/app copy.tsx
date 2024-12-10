@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, ScrollView,ToastAndroid, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'react-native';
+import { View, Text, ScrollView,ToastAndroid, TouchableOpacity, StyleSheet, SafeAreaView,StatusBar, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import PromotionCard from './PromotionCard';
 import BestSellerCard from './BestSellerCard';
@@ -17,6 +17,7 @@ export default function KFCHome() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="default" />
       {/* Header */}
       <View style={styles.header2}>
         <View style={styles.headerLeft}>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, Image, StyleSheet, Animated } from 'react-native'
+import { View, Text, TouchableOpacity, Image, StyleSheet, Animated, Alert } from 'react-native'
 
 const BottomBar = ({ totalAmount, itemCount, lastItemImage, isCheckoutDisabled }) => {
   return (
@@ -15,6 +15,28 @@ const BottomBar = ({ totalAmount, itemCount, lastItemImage, isCheckoutDisabled }
       <TouchableOpacity
         style={[styles.checkoutButton, isCheckoutDisabled && styles.disabledCheckoutButton]}
         disabled={isCheckoutDisabled}
+        
+        onPress={() => {
+          Alert.alert(
+            'Order Confirmation',
+            'Do you want to place the order?',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'Confirm',
+                onPress: () => {
+                  console.log('Order Placed');
+                  Alert.alert('Success', 'Your order has been placed successfully');
+                  
+                },
+              },
+            ],
+            { cancelable: true }
+          );
+      }}
       >
         <Text style={styles.totalAmount}>Rs {totalAmount}</Text>
         <Text style={styles.checkoutText}>Checkout ≫</Text>

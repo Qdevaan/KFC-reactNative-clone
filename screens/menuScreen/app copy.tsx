@@ -3,7 +3,7 @@ import { View, StyleSheet, SafeAreaView, StatusBar, Text, FlatList } from 'react
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import Header from './components/Header';
 import data from './data.json';
-import DeliveryToggle from './components/DeliveryToggle';
+import DeliveryToggle from '../mainScreen/DeliveryToggle';
 import CategoryTabs from './components/CategoryTabs';
 import MenuItem from './components/MenuItem';
 import { CartProvider, useCart } from '../cartScreen/CartContext';
@@ -62,7 +62,7 @@ function MenuScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="default" />
       <Header />
       <DeliveryToggle />
       <CategoryTabs 

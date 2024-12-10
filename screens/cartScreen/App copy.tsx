@@ -3,7 +3,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
   SafeAreaView,
-  ScrollView,
   View,
   Text,
   TextInput,
@@ -13,7 +12,6 @@ import {
   FlatList,
   Alert,
   Animated,
-  ToastAndroid,
 } from 'react-native';
 import CartItem from './CartItem';
 import RecommendationCard from './RecommendationCard';
@@ -21,7 +19,6 @@ import Header from './Header';
 import BottomBar from './BottomBar';
 import { CartProvider, useCart } from './CartContext';
 import cartData from './data.json';
-import { Navigation } from 'lucide-react';
 
 export default function App() {
 
@@ -72,7 +69,7 @@ function CartScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="default" />
       
       <Header />
 
