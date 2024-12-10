@@ -1,21 +1,22 @@
 import React from 'react'
 import { View, Text, TouchableOpacity, Image, StyleSheet, Animated, Alert } from 'react-native'
+import { useCart } from './CartContext'
 
 const BottomBar = ({ totalAmount, itemCount, lastItemImage, isCheckoutDisabled }) => {
+  const { clearCart } = useCart()
+
   return (
-    <Animated.View
-      style={styles.bottomBar}
-    >
+    <Animated.View style={styles.bottomBar}>
       <View style={styles.bottomLeft}>
         <Image
           source={{ uri: lastItemImage }}
-          style={styles.bottomItemImage} />
+          style={styles.bottomItemImage}
+        />
         <Text style={styles.itemCount}>{itemCount} items</Text>
       </View>
       <TouchableOpacity
         style={[styles.checkoutButton, isCheckoutDisabled && styles.disabledCheckoutButton]}
         disabled={isCheckoutDisabled}
-        
         onPress={() => {
           Alert.alert(
             'Order Confirmation',
@@ -28,15 +29,15 @@ const BottomBar = ({ totalAmount, itemCount, lastItemImage, isCheckoutDisabled }
               {
                 text: 'Confirm',
                 onPress: () => {
-                  console.log('Order Placed');
-                  Alert.alert('Success', 'Your order has been placed successfully');
-                  
+                  console.log('Order Placed')
+                  clearCart()
+                  Alert.alert('Success', 'Your order has been placed successfully')
                 },
               },
             ],
             { cancelable: true }
-          );
-      }}
+          )
+        }}
       >
         <Text style={styles.totalAmount}>Rs {totalAmount}</Text>
         <Text style={styles.checkoutText}>Checkout ≫</Text>
@@ -55,7 +56,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
-    // paddingBottom: 4,
     paddingHorizontal: 8,
     borderTopWidth: 1,
     borderTopColor: '#e0e0e0',
@@ -68,10 +68,9 @@ const styles = StyleSheet.create({
   bottomLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    // backgroundColor: '#f8f8f8',
     borderRadius: 4,
     padding: 8,
-    flex: 0.2
+    flex: 0.2,
   },
   bottomItemImage: {
     width: 40,
