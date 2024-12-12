@@ -1,18 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, ScrollView,ToastAndroid, TouchableOpacity, StyleSheet, SafeAreaView,StatusBar, Image } from 'react-native';
+import { View, Text, ScrollView, ToastAndroid, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar, Image, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import PromotionCard from './PromotionCard';
 import BestSellerCard from './BestSellerCard';
 import TopDealCard from './TopDealCard';
 import DeliveryToggle from './DeliveryToggle';
+import SideMenu from './SideMenu';
 import data from './data.json';
-
 
 export default function KFCHome() {
   const navigation = useNavigation();
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+
   const showToast = (message) => {
     ToastAndroid.show(message, ToastAndroid.SHORT);
+  };
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: isSideMenuOpen ? 1 : 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [isSideMenuOpen]);
+
+  const handleLogin = () => {
+    showToast('Login clicked');
+    setIsSideMenuOpen(false);
+  };
+
+  const handleAbout = () => {
+    navigation.navigate('About');
+    setIsSideMenuOpen(false);
   };
 
   return (
@@ -21,8 +42,7 @@ export default function KFCHome() {
       {/* Header */}
       <View style={styles.header2}>
         <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => showToast('Menu clicked')}>
-            
+          <TouchableOpacity onPress={() => setIsSideMenuOpen(true)} accessibilityLabel="Open menu">
             <Ionicons name="menu" size={24} color="black" />
           </TouchableOpacity>
           <View style={styles.locationContainer}>
@@ -38,7 +58,7 @@ export default function KFCHome() {
             source={require('../assets/KFClogo.png')} 
             style={styles.logo2}
           />
-          <TouchableOpacity onPress={() => showToast('Search clicked')}>
+          <TouchableOpacity onPress={() => showToast('Search clicked')} accessibilityLabel="Search">
             <Ionicons name="search" size={24} color="black" />
           </TouchableOpacity>
         </View>
@@ -77,47 +97,45 @@ export default function KFCHome() {
           <View style={[styles.container2, { flex: 0.1 }]}>
             {/* View 1: Main Card */}
             <View style={styles.singleCardView}>
-            <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Menu')}>
-            <Text style={styles.title}>{data.cards[0].title}</Text>
-            <Image source={{ uri: data.cards[0].image }} style={styles.image} />
-          </TouchableOpacity>
-</View>
+              <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Menu')}>
+                <Text style={styles.title}>{data.cards[0].title}</Text>
+                <Image source={{ uri: data.cards[0].image }} style={styles.image} />
+              </TouchableOpacity>
+            </View>
 
             {/* View 2: Two data.cards */}
-            {/* View 2: Two data.cards (Slice 1 to 3) */}
-<View style={styles.doubleCardView}>
-  {data.cards.slice(1, 3).map((card) => (
-    <TouchableOpacity
-      key={card.id}
-      style={styles.card}
-      onPress={() => {
-        navigation.navigate('Menu', { categoryId: card.id });
-        console.log(`Clicked on card ${card.id}`);
-      }}
-    >
-      <Text style={styles.title}>{card.title}</Text>
-      <Image source={{ uri: card.image }} style={styles.image} />
-    </TouchableOpacity>
-  ))}
-</View>
+            <View style={styles.doubleCardView}>
+              {data.cards.slice(1, 3).map((card) => (
+                <TouchableOpacity
+                  key={card.id}
+                  style={styles.card}
+                  onPress={() => {
+                    navigation.navigate('Menu', { categoryId: card.id });
+                    console.log(`Clicked on card ${card.id}`);
+                  }}
+                >
+                  <Text style={styles.title}>{card.title}</Text>
+                  <Image source={{ uri: card.image }} style={styles.image} />
+                </TouchableOpacity>
+              ))}
+            </View>
 
-{/* View 3: Two data.cards (Slice 3 onward) */}
-<View style={styles.doubleCardView}>
-  {data.cards.slice(3).map((card) => (
-    <TouchableOpacity
-      key={card.id}
-      style={styles.card}
-      onPress={() => {
-        navigation.navigate('Menu', { categoryId: card.id });
-        console.log(`Clicked on card ${card.id}`);
-      }}
-    >
-      <Text style={styles.title}>{card.title}</Text>
-      <Image source={{ uri: card.image }} style={styles.image} />
-    </TouchableOpacity>
-  ))}
-</View>
-
+            {/* View 3: Two data.cards */}
+            <View style={styles.doubleCardView}>
+              {data.cards.slice(3).map((card) => (
+                <TouchableOpacity
+                  key={card.id}
+                  style={styles.card}
+                  onPress={() => {
+                    navigation.navigate('Menu', { categoryId: card.id });
+                    console.log(`Clicked on card ${card.id}`);
+                  }}
+                >
+                  <Text style={styles.title}>{card.title}</Text>
+                  <Image source={{ uri: card.image }} style={styles.image} />
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         </View>
 
@@ -153,12 +171,38 @@ export default function KFCHome() {
       </ScrollView>
 
       {/* Fixed Bucket Icon */}
-      <TouchableOpacity style={styles.bucketIcon} onPress={() => navigation.navigate('Bucket')}>
+      <TouchableOpacity style={styles.bucketIcon} onPress={() => navigation.navigate('Bucket')} accessibilityLabel="View bucket">
         <Image 
           source={require('../assets/bucket-icon.png')}
           style={{ width: 80, height: 80 }}
         />
       </TouchableOpacity>
+
+      {/* Side Menu Overlay */}
+      {isSideMenuOpen && (
+        <Animated.View 
+          style={[
+            styles.sideMenuOverlay,
+            {
+              opacity: fadeAnim,
+            },
+          ]}
+        >
+          <TouchableOpacity 
+            style={StyleSheet.absoluteFill} 
+            onPress={() => setIsSideMenuOpen(false)}
+            accessibilityLabel="Close menu"
+          />
+        </Animated.View>
+      )}
+
+      {/* Side Menu */}
+      <SideMenu
+        isOpen={isSideMenuOpen}
+        onClose={() => setIsSideMenuOpen(false)}
+        onLogin={handleLogin}
+        onAbout={handleAbout}
+      />
     </SafeAreaView>
   );
 }
@@ -188,7 +232,6 @@ const styles = StyleSheet.create({
   addressText: {
     fontSize: 14,
     marginLeft: 8,
-    
   },
   logo: {
     width: 60,
@@ -216,10 +259,8 @@ const styles = StyleSheet.create({
     width: '120%',
     paddingHorizontal: 16,
     marginHorizontal:-16,
-    
   },
   section: {
-    // marginBottom: 12,
     marginHorizontal: 16,
   },
   sectionTitle: {
@@ -240,7 +281,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: 'black',
     fontWeight: 'bold',
-
   },
   menuGrid: {
     flexDirection: 'row',
@@ -261,7 +301,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   footer: {
-    // position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
@@ -301,79 +340,58 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
-    
   },
   container2: {
     flex: 0.5,
-    // backgroundColor: "white", // Black background
-    // padding: 8,
-    borderStyle: 'dotted',
-    borderColor: 'grey',
     flexDirection: "row",
     justifyContent: "space-between",
     paddingBottom: -5,
-    },
-    singleCardView: {
+  },
+  singleCardView: {
     flex: 1,
     marginRight: 3,
     paddingTop: 5,
     marginLeft:2,
-    
     justifyContent: "center",
     alignItems: "center",
     borderStyle: 'dotted',
     borderColor: 'grey',
     height: '100%',
-    // paddingBottom: 8,
     paddingBottom: -5,
-
-    },
-    doubleCardView: {
+  },
+  doubleCardView: {
     paddingTop:5,
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",
-    // marginBottom: 8,
-    // marginLeft: 6,
-    borderStyle: 'dotted',
-    borderColor: 'grey',
-    // paddingBottom: -5,
-    // paddingRight: -5,
     marginRight: -5,
     marginLeft: 5,
-
-    },
-    card: {
-    // backgroundColor: "white",
+  },
+  card: {
     flex: 1,
-    width: "95%", // Adjust size to fit two per row
+    width: "95%",
     marginBottom: 5,
     marginHorizontal: -5,
     paddingHorizontal: -5,
     borderRadius: 3,
     alignItems: "center",
-    //paddingRight: 10,
     borderStyle: 'dotted',
     borderColor: 'grey',
     borderWidth: 1,
-    // justifyContent: 'flex-end', // Ensure image is at the bottom
-    // justifyContent: 'flex-start', // Ensure text is at the top
-    },
-    image: {
+  },
+  image: {
     width: 90,
     height: 90,
     resizeMode: "contain",
-    marginTop: 'auto', // Push image to the bottom
-    },
-    title: {
-    // color: "black", // White text
+    marginTop: 'auto',
+  },
+  title: {
     fontSize: 16,
     textAlign: "center",
     marginTop: 10,
     fontWeight: "bold",
   },
   header2: {
-    // paddingTop: 35,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -409,4 +427,10 @@ const styles = StyleSheet.create({
     height: 40,
     resizeMode: 'contain',
   },
+  sideMenuOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 998,
+  },
 });
+
