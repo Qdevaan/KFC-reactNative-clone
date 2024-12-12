@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface SideMenuProps {
@@ -7,9 +7,10 @@ interface SideMenuProps {
   onClose: () => void;
   onLogin: () => void;
   onAbout: () => void;
+  user: { name: string; profilePicture: string } | null;
 }
 
-const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogin, onAbout }) => {
+const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogin, onAbout, user }) => {
   const slideAnim = useRef(new Animated.Value(-300)).current;
 
   useEffect(() => {
@@ -31,13 +32,19 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogin, onAbout }
         <Ionicons name="close" size={24} color="black" />
       </TouchableOpacity>
       <View style={styles.content}>
-      <TouchableOpacity style={styles.menuItem} onPress={onAbout} accessibilityLabel="About KFC">
+        {user ? (
+          <View style={styles.userInfo}>
+            <Image source={{ uri: user.profilePicture }} style={styles.profilePicture} />
+            <Text style={styles.userName}>{user.name}</Text>
+          </View>
+        ) : (
+          <TouchableOpacity style={styles.menuItem} onPress={onLogin} accessibilityLabel="Log in or sign up">
+            <Text style={styles.menuItemText}>Login</Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity style={styles.menuItem} onPress={onAbout} accessibilityLabel="About KFC">
           <Text style={styles.menuItemText}>About</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={onLogin} accessibilityLabel="Log in or sign up">
-          <Text style={styles.menuItemText}>Login</Text>
-        </TouchableOpacity>
-        
       </View>
     </Animated.View>
   );
@@ -80,7 +87,20 @@ const styles = StyleSheet.create({
   menuItemText: {
     fontSize: 18,
   },
+  userInfo: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  profilePicture: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 10,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
 
 export default SideMenu;
-

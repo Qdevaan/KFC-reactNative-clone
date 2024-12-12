@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { View, Text, ScrollView, ToastAndroid, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar, Image, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import PromotionCard from './PromotionCard';
@@ -8,11 +8,20 @@ import TopDealCard from './TopDealCard';
 import DeliveryToggle from './DeliveryToggle';
 import SideMenu from './SideMenu';
 import data from './data.json';
+// import AboutScreen from './screens/AboutScreen'; // Removed as it's not used
 
 export default function KFCHome() {
   const navigation = useNavigation();
+  const route = useRoute();
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (route.params?.user) {
+      setUser(route.params.user);
+    }
+  }, [route.params?.user]);
 
   const showToast = (message) => {
     ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -27,7 +36,7 @@ export default function KFCHome() {
   }, [isSideMenuOpen]);
 
   const handleLogin = () => {
-    showToast('Login clicked');
+    navigation.navigate('Login');
     setIsSideMenuOpen(false);
   };
 
@@ -202,6 +211,7 @@ export default function KFCHome() {
         onClose={() => setIsSideMenuOpen(false)}
         onLogin={handleLogin}
         onAbout={handleAbout}
+        user={user}
       />
     </SafeAreaView>
   );
