@@ -111,6 +111,9 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#eee',
+    backgroundColor: '#eee',
   },
   userName: {
     fontSize: 18,
@@ -125,6 +128,9 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#eee',
+    backgroundColor: '#eee',
   },
   loginPrompt: {
     textAlign: 'center',
