@@ -54,7 +54,7 @@ export default function AccountScreen({ navigation }) {
         username,
         website,
         avatar_url,
-        full_name,
+        full_name: fullName,
         updated_at: new Date(),
       };
 

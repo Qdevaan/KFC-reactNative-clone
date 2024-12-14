@@ -14,6 +14,7 @@ const LoginScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [fullName, setFullName] = useState('');
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -45,6 +46,7 @@ const LoginScreen = ({ navigation }) => {
           options: {
             data: {
               username: username,
+              full_name: fullName,
             }
           }
         });
@@ -75,7 +77,8 @@ const LoginScreen = ({ navigation }) => {
             .from('profiles')
             .upsert({
               id: data.user.id,
-              username: username || data.user.email?.split('@')[0], // Use email as username if not provided
+              username: username || data.user.email?.split('@')[0],
+              full_name: fullName,
               avatar_url: avatarUrl,
               updated_at: new Date(),
             });
@@ -114,12 +117,20 @@ const LoginScreen = ({ navigation }) => {
         </TouchableOpacity>
       )}
       {!isLogin && (
-        <TextInput
-          style={styles.input}
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
-        />
+        <>
+          <TextInput
+            style={styles.input}
+            placeholder="Username"
+            value={username}
+            onChangeText={setUsername}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Full Name"
+            value={fullName}
+            onChangeText={setFullName}
+          />
+        </>
       )}
       <TextInput
         style={styles.input}
@@ -188,9 +199,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 4,
+    padding: 12,
+    fontSize: 16,
     marginBottom: 10,
   },
   passwordContainer: {
@@ -206,14 +219,15 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#dc2626',
-    padding: 15,
-    borderRadius: 5,
+    padding: 16,
+    borderRadius: 4,
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 16,
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+    fontSize: 16,
   },
   laterButton: {
     backgroundColor: '#f3f4f6',

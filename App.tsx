@@ -17,12 +17,12 @@ const Stack = createStackNavigator();
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [userProfile, setUserProfile] = useState<{ username: string; avatar_url: string } | null>(null);
+  const [userProfile, setUserProfile] = useState<{ username: string; avatar_url: string; full_name: string } | null>(null);
 
   const fetchUserProfile = async (user: User) => {
     const { data, error } = await supabase
       .from('profiles')
-      .select('username, avatar_url')
+      .select('username, avatar_url, full_name')
       .eq('id', user.id)
       .single();
 

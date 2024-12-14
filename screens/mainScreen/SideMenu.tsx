@@ -10,7 +10,7 @@ interface SideMenuProps {
   onLogout: () => void;
   onAbout: () => void;
   user: { email: string } | null;
-  userProfile: { username: string; avatar_url: string } | null;
+  userProfile: { username: string; avatar_url: string; full_name: string } | null;
   navigation: any;
 }
 
@@ -41,10 +41,10 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogin, onLogout,
         {user ? (
           <View style={styles.userInfo}>
             <Image 
-              source={{ uri: userProfile?.avatar_url ? `${supabase.storage.from('avatars').getPublicUrl(userProfile.avatar_url).data.publicUrl}` : DEFAULT_IMAGE_URL }} 
+              source={{ uri: userProfile?.avatar_url ? supabase.storage.from('avatars').getPublicUrl(userProfile.avatar_url).data.publicUrl : DEFAULT_IMAGE_URL }} 
               style={styles.profilePicture} 
             />
-            <Text style={styles.userName}>{userProfile?.username || 'User'}</Text>
+            <Text style={styles.userName}>{userProfile?.full_name || userProfile?.username || 'User'}</Text>
             <Text style={styles.userEmail}>{user.email}</Text>
             <TouchableOpacity 
               style={styles.accountButton} 
