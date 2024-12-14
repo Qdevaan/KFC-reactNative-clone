@@ -48,13 +48,13 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogin, onLogout,
             />
             <Text style={styles.loginPrompt}>Login to avail exclusive deals and promotions</Text>
             <TouchableOpacity style={styles.loginButton} onPress={onLogin}>
-              <Text style={styles.loginButtonText}>Login / Signup</Text>
+              <Text style={styles.loginButtonText}>Login</Text>
             </TouchableOpacity>
           </View>
         )}
         {user && (
-          <TouchableOpacity style={styles.menuItem} onPress={onLogout}>
-            <Text style={styles.menuItemText}>Logout</Text>
+          <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
+          <Text style={styles.loginButtonText}>Logout</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -93,12 +93,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 80,
     paddingHorizontal: 20,
+    gap: 20,
   },
-  menuItem: {
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
+  // menuItem: {
+  //   paddingVertical: 15,
+  //   borderBottomWidth: 1,
+  //   borderBottomColor: '#eee',
+  // },
   menuItemText: {
     fontSize: 18,
   },
@@ -142,10 +143,22 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
+    width: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoutButton: {
+    backgroundColor: '#dc2626',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    width: 100,
+    borderRadius: 5,
+    marginLeft: 50,
   },
   loginButtonText: {
     color: 'white',
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   aboutButton: {
     paddingVertical: 15,

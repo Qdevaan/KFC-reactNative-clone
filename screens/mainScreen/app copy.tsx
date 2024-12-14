@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { View, Text, ScrollView, ToastAndroid, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar, Image, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { supabase } from '../../lib/supabase';
 import PromotionCard from './PromotionCard';
 import BestSellerCard from './BestSellerCard';
 import TopDealCard from './TopDealCard';
@@ -44,6 +45,19 @@ export default function KFCHome() {
     navigation.navigate('About');
     setIsSideMenuOpen(false);
   };
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+      setIsSideMenuOpen(false);
+      showToast('Logged out successfully');
+      // Optionally, you can navigate to the login screen or home screen
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+      showToast('Error logging out');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -67,9 +81,6 @@ export default function KFCHome() {
             source={require('../assets/KFClogo.png')} 
             style={styles.logo2}
           />
-          <TouchableOpacity onPress={() => showToast('Search clicked')} accessibilityLabel="Search">
-            <Ionicons name="search" size={24} color="black" />
-          </TouchableOpacity>
         </View>
       </View>
 
@@ -210,6 +221,7 @@ export default function KFCHome() {
         isOpen={isSideMenuOpen}
         onClose={() => setIsSideMenuOpen(false)}
         onLogin={handleLogin}
+        onLogout={handleLogout}
         onAbout={handleAbout}
         user={user}
       />

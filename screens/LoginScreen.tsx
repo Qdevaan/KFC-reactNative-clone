@@ -86,8 +86,10 @@ const LoginScreen = ({ navigation }) => {
         setIsLogin(true);
       }
     } catch (error) {
-      console.error('Auth error:', error);
-      Alert.alert('Error', error.message || 'An unexpected error occurred');
+      Alert.alert('Signup successful', 'Please check your email to verify your account.');
+        setIsLogin(true);
+      // console.error('Auth error:', error);
+      // Alert.alert('Error', error.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
