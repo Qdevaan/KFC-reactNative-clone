@@ -9,6 +9,7 @@ import DescriptionScreen from './screens/descriptionScreen/App copy';
 import BucketScreen from './screens/cartScreen/App copy';
 import AboutScreen from './screens/AboutScreen';
 import LoginScreen from './screens/LoginScreen';
+import AccountScreen from './screens/AccountScreen';
 import * as ImagePicker from 'expo-image-picker';
 
 const Stack = createStackNavigator();
@@ -36,7 +37,6 @@ export default function App() {
   }, []);
 
   if (isLoading) {
-    // You might want to show a loading screen here
     return null;
   }
 
@@ -45,12 +45,12 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {session ? (
           <>
-
             <Stack.Screen name="Home" component={HomeScreen} initialParams={{ user: session.user }} />
             <Stack.Screen name="Menu" component={MenuScreen} />
             <Stack.Screen name="Description" component={DescriptionScreen} />
             <Stack.Screen name="Bucket" component={BucketScreen} />
             <Stack.Screen name="About" component={AboutScreen} />
+            <Stack.Screen name="Account" component={AccountScreen} />
           </>
         ) : (
           <>
@@ -66,4 +66,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-

@@ -86,10 +86,8 @@ const LoginScreen = ({ navigation }) => {
         setIsLogin(true);
       }
     } catch (error) {
-      Alert.alert('Signup successful', 'Please check your email to verify your account.');
-        setIsLogin(true);
-      // console.error('Auth error:', error);
-      // Alert.alert('Error', error.message || 'An unexpected error occurred');
+      console.error('Auth error:', error);
+      Alert.alert('Error', error.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
@@ -254,4 +252,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
-

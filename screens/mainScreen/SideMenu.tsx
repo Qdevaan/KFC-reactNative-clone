@@ -9,11 +9,12 @@ interface SideMenuProps {
   onLogout: () => void;
   onAbout: () => void;
   user: { email: string; avatar_url?: string } | null;
+  navigation: any;
 }
 
 const DEFAULT_IMAGE_URL = 'https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg';
 
-const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogin, onLogout, onAbout, user }) => {
+const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogin, onLogout, onAbout, user, navigation }) => {
   const slideAnim = useRef(new Animated.Value(-300)).current;
 
   useEffect(() => {
@@ -37,8 +38,20 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogin, onLogout,
       <View style={styles.content}>
         {user ? (
           <View style={styles.userInfo}>
-            <Image source={{ uri: user.avatar_url || DEFAULT_IMAGE_URL }} style={styles.profilePicture} />
+            <Image 
+              source={{ uri: user.avatar_url || DEFAULT_IMAGE_URL }} 
+              style={styles.profilePicture} 
+            />
             <Text style={styles.userName}>{user.email}</Text>
+            <TouchableOpacity 
+              style={styles.accountButton} 
+              onPress={() => navigation.navigate('Account')}
+            >
+              <Text style={styles.accountButtonText}>Manage Account</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
+              <Text style={styles.loginButtonText}>Logout</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <View style={styles.guestInfo}>
@@ -51,11 +64,6 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogin, onLogout,
               <Text style={styles.loginButtonText}>Login</Text>
             </TouchableOpacity>
           </View>
-        )}
-        {user && (
-          <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
-          <Text style={styles.loginButtonText}>Logout</Text>
-          </TouchableOpacity>
         )}
       </View>
       <TouchableOpacity style={styles.aboutButton} onPress={onAbout} accessibilityLabel="About KFC">
@@ -95,11 +103,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     gap: 20,
   },
-  // menuItem: {
-  //   paddingVertical: 15,
-  //   borderBottomWidth: 1,
-  //   borderBottomColor: '#eee',
-  // },
   menuItemText: {
     fontSize: 18,
   },
@@ -151,9 +154,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#dc2626',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    width: 100,
     borderRadius: 5,
-    marginLeft: 50,
+    width: '100%',
+    alignItems: 'center',
   },
   loginButtonText: {
     color: 'white',
@@ -168,6 +171,20 @@ const styles = StyleSheet.create({
   },
   aboutButtonText: {
     fontSize: 18,
+  },
+  accountButton: {
+    backgroundColor: '#4a5568',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+  accountButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
