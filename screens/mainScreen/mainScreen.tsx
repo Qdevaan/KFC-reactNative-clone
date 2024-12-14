@@ -256,7 +256,8 @@ export default function KFCHome() {
           style={styles.bucketIcon}
           onPress={() => navigation.navigate('Cart', { 
             isDelivery: isDelivery,
-            username: userProfile?.username || 'Guest' 
+            username: userProfile?.full_name || userProfile?.username || 'Guest'
+ 
           })}
           accessibilityLabel="View cart"
         >
