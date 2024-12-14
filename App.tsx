@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Session } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import { supabase } from './lib/supabase';
 import HomeScreen from './screens/mainScreen/app copy';
 import MenuScreen from './screens/menuScreen/app copy';
@@ -17,15 +17,36 @@ const Stack = createStackNavigator();
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<{ username: string; avatar_url: string } | null>(null);
+
+  const fetchUserProfile = async (user: User) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('username, avatar_url')
+      .eq('id', user.id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching user profile:', error);
+    } else if (data) {
+      setUserProfile(data);
+    }
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      if (session?.user) {
+        fetchUserProfile(session.user);
+      }
       setIsLoading(false);
     });
 
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      if (session?.user) {
+        fetchUserProfile(session.user);
+      }
     });
 
     (async () => {
@@ -37,6 +58,7 @@ export default function App() {
   }, []);
 
   if (isLoading) {
+    // You might want to show a loading screen here
     return null;
   }
 
@@ -45,7 +67,7 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {session ? (
           <>
-            <Stack.Screen name="Home" component={HomeScreen} initialParams={{ user: session.user }} />
+            <Stack.Screen name="Home" component={HomeScreen} initialParams={{ user: session.user, userProfile }} />
             <Stack.Screen name="Menu" component={MenuScreen} />
             <Stack.Screen name="Description" component={DescriptionScreen} />
             <Stack.Screen name="Bucket" component={BucketScreen} />

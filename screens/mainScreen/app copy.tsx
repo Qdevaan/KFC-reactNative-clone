@@ -9,20 +9,42 @@ import TopDealCard from './TopDealCard';
 import DeliveryToggle from './DeliveryToggle';
 import SideMenu from './SideMenu';
 import data from './data.json';
-// import AboutScreen from './screens/AboutScreen'; // Removed as it's not used
 
 export default function KFCHome() {
   const navigation = useNavigation();
   const route = useRoute();
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if (route.params?.user) {
-      setUser(route.params.user);
-    }
+    const fetchSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user);
+      if (route.params?.user) {
+        setUser(route.params.user);
+        fetchUserProfile(route.params.user);
+      }
+    };
+
+    fetchSession();
   }, [route.params?.user]);
+
+  const fetchUserProfile = async (user) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username, avatar_url')
+        .eq('id', user.id)
+        .single();
+
+      if (error) throw error;
+      setUserProfile(data);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
+  };
 
   const showToast = (message) => {
     ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -45,13 +67,14 @@ export default function KFCHome() {
     navigation.navigate('About');
     setIsSideMenuOpen(false);
   };
+
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
       setUser(null);
+      setUserProfile(null);
       setIsSideMenuOpen(false);
       showToast('Logged out successfully');
-      // Optionally, you can navigate to the login screen or home screen
       navigation.navigate('Login');
     } catch (error) {
       console.error('Error logging out:', error);
@@ -224,6 +247,8 @@ export default function KFCHome() {
         onLogout={handleLogout}
         onAbout={handleAbout}
         user={user}
+        userProfile={userProfile}
+        navigation={navigation}
       />
     </SafeAreaView>
   );
@@ -455,4 +480,3 @@ const styles = StyleSheet.create({
     zIndex: 998,
   },
 });
-

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { supabase } from '../../lib/supabase';
 
 interface SideMenuProps {
   isOpen: boolean;
@@ -8,13 +9,14 @@ interface SideMenuProps {
   onLogin: () => void;
   onLogout: () => void;
   onAbout: () => void;
-  user: { email: string; avatar_url?: string } | null;
+  user: { email: string } | null;
+  userProfile: { username: string; avatar_url: string } | null;
   navigation: any;
 }
 
 const DEFAULT_IMAGE_URL = 'https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg';
 
-const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogin, onLogout, onAbout, user, navigation }) => {
+const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogin, onLogout, onAbout, user, userProfile, navigation }) => {
   const slideAnim = useRef(new Animated.Value(-300)).current;
 
   useEffect(() => {
@@ -39,10 +41,11 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogin, onLogout,
         {user ? (
           <View style={styles.userInfo}>
             <Image 
-              source={{ uri: user.avatar_url || DEFAULT_IMAGE_URL }} 
+              source={{ uri: userProfile?.avatar_url ? `${supabase.storage.from('avatars').getPublicUrl(userProfile.avatar_url).data.publicUrl}` : DEFAULT_IMAGE_URL }} 
               style={styles.profilePicture} 
             />
-            <Text style={styles.userName}>{user.email}</Text>
+            <Text style={styles.userName}>{userProfile?.username || 'User'}</Text>
+            <Text style={styles.userEmail}>{user.email}</Text>
             <TouchableOpacity 
               style={styles.accountButton} 
               onPress={() => navigation.navigate('Account')}
@@ -123,6 +126,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  userEmail: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 10,
+  },
   guestInfo: {
     alignItems: 'center',
     marginBottom: 20,
@@ -189,4 +197,3 @@ const styles = StyleSheet.create({
 });
 
 export default SideMenu;
-

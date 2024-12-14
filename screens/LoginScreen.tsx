@@ -75,8 +75,9 @@ const LoginScreen = ({ navigation }) => {
             .from('profiles')
             .upsert({
               id: data.user.id,
-              username,
+              username: username || data.user.email?.split('@')[0], // Use email as username if not provided
               avatar_url: avatarUrl,
+              updated_at: new Date(),
             });
 
           if (profileError) throw profileError;

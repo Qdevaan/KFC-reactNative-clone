@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ScrollView } from 'react-native';
 import { supabase } from '../lib/supabase';
 import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function AccountScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState('');
+  const [fullName, setFullName] = useState('');
   const [website, setWebsite] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
 
@@ -21,7 +23,7 @@ export default function AccountScreen({ navigation }) {
 
       const { data, error, status } = await supabase
         .from('profiles')
-        .select(`username, website, avatar_url`)
+        .select(`username, website, avatar_url, full_name`)
         .eq('id', user.id)
         .single();
       if (error && status !== 406) {
@@ -30,6 +32,7 @@ export default function AccountScreen({ navigation }) {
 
       if (data) {
         setUsername(data.username);
+        setFullName(data.full_name || '');
         setWebsite(data.website);
         setAvatarUrl(data.avatar_url);
       }
@@ -40,7 +43,7 @@ export default function AccountScreen({ navigation }) {
     }
   }
 
-  async function updateProfile({ username, website, avatar_url }) {
+  async function updateProfile({ username, website, avatar_url, full_name }) {
     try {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
@@ -51,6 +54,7 @@ export default function AccountScreen({ navigation }) {
         username,
         website,
         avatar_url,
+        full_name,
         updated_at: new Date(),
       };
 
@@ -95,8 +99,8 @@ export default function AccountScreen({ navigation }) {
         if (uploadError) throw uploadError;
 
         const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(filePath);
-        setAvatarUrl(urlData.publicUrl);
-        await updateProfile({ username, website, avatar_url: urlData.publicUrl });
+        setAvatarUrl(filePath);
+        await updateProfile({ username, website, avatar_url: filePath, full_name: fullName });
       }
     } catch (error) {
       Alert.alert('Error', error.message);
@@ -114,99 +118,157 @@ export default function AccountScreen({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backButton}>← Back</Text>
+          <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
+        <Text style={styles.headerTitle}>Manage Account</Text>
         <TouchableOpacity onPress={handleLogout}>
           <Text style={styles.logoutButton}>Logout</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={uploadAvatar}>
-        {avatarUrl ? (
-          <Image source={{ uri: avatarUrl }} style={styles.avatar} />
-        ) : (
-          <View style={styles.avatarPlaceholder}>
-            <Text>Upload Avatar</Text>
+      <View style={styles.avatarContainer}>
+        <TouchableOpacity onPress={uploadAvatar}>
+          {avatarUrl ? (
+            <Image
+              source={{ uri: supabase.storage.from('avatars').getPublicUrl(avatarUrl).data.publicUrl }}
+              style={styles.avatar}
+            />
+          ) : (
+            <View style={styles.avatarPlaceholder}>
+              <Ionicons name="person" size={64} color="#666" />
+            </View>
+          )}
+          <View style={styles.avatarOverlay}>
+            <Ionicons name="camera" size={20} color="white" />
           </View>
-        )}</TouchableOpacity>
-      <TextInput
-        style={styles.input}
-        value={username}
-        onChangeText={setUsername}
-        placeholder="Username"
-      />
-      <TextInput
-        style={styles.input}
-        value={website}
-        onChangeText={setWebsite}
-        placeholder="Website"
-      />
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => updateProfile({ username, website, avatar_url: avatarUrl })}
-        disabled={loading}
-      >
-        <Text style={styles.buttonText}>{loading ? 'Loading...' : 'Update Profile'}</Text>
-      </TouchableOpacity>
-    </View>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.form}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Username</Text>
+          <TextInput
+            style={styles.input}
+            value={username}
+            onChangeText={setUsername}
+            placeholder="Username"
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Full Name</Text>
+          <TextInput
+            style={styles.input}
+            value={fullName}
+            onChangeText={setFullName}
+            placeholder="Full Name"
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Website</Text>
+          <TextInput
+            style={styles.input}
+            value={website}
+            onChangeText={setWebsite}
+            placeholder="Website"
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => updateProfile({ username, website, avatar_url: avatarUrl, full_name: fullName })}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>{loading ? 'Updating...' : 'Update Profile'}</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 20,
-  },
-  avatarPlaceholder: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#E1E1E1',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 10,
-    marginBottom: 20,
-    borderRadius: 5,
-  },
-  button: {
-    backgroundColor: '#dc2626',
-    padding: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
+    backgroundColor: '#f3f4f6',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%',
-    marginBottom: 20,
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+    backgroundColor: 'white',
   },
-  backButton: {
+  headerTitle: {
     fontSize: 18,
-    color: '#4a5568',
+    fontWeight: 'bold',
   },
   logoutButton: {
-    fontSize: 18,
     color: '#dc2626',
+    fontWeight: 'bold',
+  },
+  avatarContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+  },
+  avatarPlaceholder: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#E1E1E1',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#dc2626',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  form: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 16,
+    marginHorizontal: 16,
+  },
+  inputContainer: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#4b5563',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 4,
+    padding: 12,
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: '#dc2626',
+    padding: 16,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
 
