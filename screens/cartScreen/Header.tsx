@@ -26,12 +26,7 @@ const Header = () => {
         source={require('../assets/KFClogo.png')} 
         style={styles.logo}
       />
-      {/* <TouchableOpacity>
-        <Ionicons name="search" size={24} color="black" />
-      </TouchableOpacity> */}
-      {/* <TouchableOpacity>
-        <Ionicons name="menu" size={24} color="black" />
-      </TouchableOpacity> */}
+     
       </View>
     </View>
 );

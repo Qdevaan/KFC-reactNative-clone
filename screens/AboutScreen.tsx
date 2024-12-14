@@ -9,7 +9,7 @@ interface Developer {
 
 const developers: Developer[] = [
   { name: "Umair Rasheed", regNumber: "FA22-BCS-0XX-G2", image: "https://i.pinimg.com/736x/b5/98/05/b5980553af4ff6f878108a13fef7aaf4.jpg" },
-  { name: "Adeel Ahmad", regNumber: "FA22-BCS-0XX-G2", image: "https://i.pinimg.com/736x/5b/54/32/5b54328a37362977c94042f04933d084.jpg" },
+  { name: "Adeel Ahmad", regNumber: "FA22-BCS-075-G2", image: "https://i.pinimg.com/736x/5b/54/32/5b54328a37362977c94042f04933d084.jpg" },
   { name: "Muhammad Ahmad", regNumber: "FA22-BCS-0XX-G2", image: "https://i.pinimg.com/736x/ca/c3/78/cac3788b0b83d397f968dbc8b5613aa5.jpg" },
 ];
 
