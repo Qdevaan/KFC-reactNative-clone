@@ -35,7 +35,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogin, onLogout,
       },
     ]}>
       <TouchableOpacity style={styles.closeButton} onPress={onClose} accessibilityLabel="Close menu">
-        <Ionicons name="close" size={24} color="black" />
+        <Ionicons name="close" size={24} color="#dc2626" />
       </TouchableOpacity>
       <View style={styles.content}>
         {user ? (
@@ -178,19 +178,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   aboutButtonText: {
-    fontSize: 18,
+    fontSize: 16,
+    color: '#dc2626',
+    fontWeight: 'bold',
   },
   accountButton: {
-    backgroundColor: '#4a5568',
+    // backgroundColor: '#4a5568',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
     marginBottom: 10,
     width: '100%',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#dc2626',
   },
   accountButtonText: {
-    color: 'white',
+    color: '#dc2626',
     fontWeight: 'bold',
     textAlign: 'center',
   },

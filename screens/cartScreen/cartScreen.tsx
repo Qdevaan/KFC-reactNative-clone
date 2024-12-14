@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigation } from '@react-navigation/native';
-
+import { useNavigation, useRoute } from '@react-navigation/native';
 import {
   SafeAreaView,
   View,
@@ -15,13 +14,12 @@ import {
 } from 'react-native';
 import CartItem from './CartItem';
 import RecommendationCard from './RecommendationCard';
-import Header from './Header';
+import Header from '../menuScreen/components/Header';
 import BottomBar from './BottomBar';
 import { CartProvider, useCart } from './CartContext';
 import cartData from './data.json';
 
 export default function App() {
-
   return (
     <CartProvider>
       <CartScreen />
@@ -31,9 +29,12 @@ export default function App() {
 
 function CartScreen() {
   const navigation = useNavigation();
+  const route = useRoute();
   const { cartItems, updateQuantity, removeItem, addToCart } = useCart();
   const [recommendations, setRecommendations] = useState(cartData.recommendations);
   const [lastAddedItem, setLastAddedItem] = useState(null);
+  const [isDelivery, setIsDelivery] = useState(route.params?.isDelivery || false);
+  const [username, setUsername] = useState(route.params?.username || 'Guest');
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -71,7 +72,7 @@ function CartScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="default" />
       
-      <Header />
+      <Header isDelivery={isDelivery} username={username} />
 
       <Animated.ScrollView 
         style={[styles.content, { opacity: fadeAnim }]}
@@ -102,7 +103,7 @@ function CartScreen() {
           placeholderTextColor="#666"
         />
 
-        <TouchableOpacity style={styles.exploreMenu} onPress={() => navigation.navigate('Menu')}>
+        <TouchableOpacity style={styles.exploreMenu} onPress={() => navigation.navigate('Menu', { isDelivery, username })}>
           <View style={styles.exploreContent}>
             <View>
               <Text style={styles.exploreTitle}>Explore Menu</Text>
@@ -158,7 +159,6 @@ function CartScreen() {
     </SafeAreaView>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -281,3 +281,4 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
   },
 });
+

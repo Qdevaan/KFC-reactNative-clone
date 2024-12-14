@@ -1,26 +1,29 @@
-import React, { useState } from 'react';
-import { View, Text,ToastAndroid, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import React from 'react';
+import { View, ToastAndroid, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
-const DeliveryToggle = () => {
-  const [isDelivery, setIsDelivery] = useState(false);
-  const showToast = (message) => {
+interface DeliveryToggleProps {
+  isDelivery: boolean;
+  setIsDelivery: (isDelivery: boolean) => void;
+}
+
+const DeliveryToggle: React.FC<DeliveryToggleProps> = ({ isDelivery, setIsDelivery }) => {
+  const showToast = (message: string) => {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   };
 
-  
   return (
     <View style={styles.toggleContainer}>
       <TouchableOpacity 
         style={[styles.toggleButton, !isDelivery && styles.toggleButtonActive]}
-        onPress={() => { showToast('Delivery Selected'); setIsDelivery(false); }}
+        onPress={() => { showToast('Pickup Selected'); setIsDelivery(false); }}
       >
-        <Image source={require('../assets/delivery.png')} style={{ width: 140, height: 45 }} />
+        <Image source={require('../assets/pickup.png')} style={{ width: 140, height: 45 }} />
       </TouchableOpacity>
       <TouchableOpacity 
         style={[styles.toggleButton, isDelivery && styles.toggleButtonActive]}
-        onPress={() => { showToast('PickUp Selected'); setIsDelivery(true); }}
+        onPress={() => { showToast('Delivery Selected'); setIsDelivery(true); }}
       >
-        <Image source={require('../assets/pickup.png')} style={{ width: 140, height: 45 }} />
+        <Image source={require('../assets/delivery.png')} style={{ width: 140, height: 45 }} />
       </TouchableOpacity>
     </View>
   );
@@ -43,13 +46,10 @@ const styles = StyleSheet.create({
   },
   toggleButtonActive: {
     backgroundColor: '#fff',
-    borderWidth: 2,
-    borderColor: 'red',
-  },
-  toggleTextActive: {
-    color: '#000',
-    fontWeight: '500',
+    borderWidth: 1,
+    borderColor: '#dc2626',
   },
 });
 
 export default DeliveryToggle;
+

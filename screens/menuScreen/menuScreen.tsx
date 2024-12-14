@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar, Text, FlatList } from 'react-native';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
+import { supabase } from '../../lib/supabase';
 import Header from './components/Header';
 import data from './data.json';
 import DeliveryToggle from '../mainScreen/DeliveryToggle';
@@ -11,6 +12,8 @@ import { CartProvider, useCart } from '../cartScreen/CartContext';
 type RouteParams = {
   params: {
     categoryId: string;
+    isDelivery: boolean;
+    username: string;
   };
 };
 
@@ -22,6 +25,27 @@ function MenuScreen() {
   const number = parseInt(categoryId, 10);
   const [activeCategory, setActiveCategory] = useState(data.categories[number - 1]);
   const [favorites, setFavorites] = useState<number[]>([]);
+  const [isDelivery, setIsDelivery] = useState(route.params?.isDelivery || false);
+  const [username, setUsername] = useState(route.params?.username || 'Guest');
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('username, full_name')
+          .eq('id', session.user.id)
+          .single();
+
+        if (data && !error) {
+          setUsername(data.full_name || data.username || 'Guest');
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const getCategoryItems = (category: string) => {
     const key = category.toLowerCase().replace(/[^a-z]/g, '') + 'items';
@@ -63,8 +87,8 @@ function MenuScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="default" />
-      <Header />
-      <DeliveryToggle />
+      <Header isDelivery={isDelivery} username={username} />
+      <DeliveryToggle isDelivery={isDelivery} setIsDelivery={setIsDelivery} />
       <CategoryTabs 
         categories={data.categories}
         activeCategory={activeCategory}
@@ -108,3 +132,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+

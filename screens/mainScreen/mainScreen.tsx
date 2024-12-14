@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { View, Text, ScrollView, ToastAndroid, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar, Image, Animated } from 'react-native';
+import { View, Text, ScrollView, ToastAndroid, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar, Image, Animated, PanResponder } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase';
 import PromotionCard from './PromotionCard';
@@ -16,7 +16,20 @@ export default function KFCHome() {
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
-  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const [isDelivery, setIsDelivery] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const pan = useRef(new Animated.ValueXY()).current;
+
+  const panResponder = PanResponder.create({
+    onMoveShouldSetPanResponder: () => true,
+    onPanResponderMove: Animated.event([
+      null,
+      { dx: pan.x, dy: pan.y }
+    ], { useNativeDriver: false }),
+    onPanResponderRelease: () => {
+      pan.extractOffset();
+    }
+  });
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -35,7 +48,7 @@ export default function KFCHome() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, avatar_url')
+        .select('username, avatar_url, full_name')
         .eq('id', user.id)
         .single();
 
@@ -94,8 +107,8 @@ export default function KFCHome() {
           <View style={styles.locationContainer}>
             <Ionicons name="location-outline" size={20} color="black" />
             <View>
-              <Text style={styles.pickupText}>Pickup From</Text>
-              <Text style={styles.locationText}>{"QDEVAAN"}</Text>
+              <Text style={styles.pickupText}>{isDelivery ? 'Delivery to' : 'Pickup from'}</Text>
+              <Text style={styles.locationText}>{userProfile?.username || 'Guest'}</Text>
             </View>
           </View>
         </View>
@@ -107,7 +120,7 @@ export default function KFCHome() {
         </View>
       </View>
 
-      <DeliveryToggle/>
+      <DeliveryToggle isDelivery={isDelivery} setIsDelivery={setIsDelivery} />
 
       <ScrollView style={styles.content}>
         {/* Promotions */}
@@ -140,7 +153,11 @@ export default function KFCHome() {
           <View style={[styles.container2, { flex: 0.1 }]}>
             {/* View 1: Main Card */}
             <View style={styles.singleCardView}>
-              <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Menu')}>
+              <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Menu', { 
+                categoryId: data.cards[0].id, 
+                isDelivery: isDelivery,
+                username: userProfile?.full_name || userProfile?.username || 'Guest'
+              })}>
                 <Text style={styles.title}>{data.cards[0].title}</Text>
                 <Image source={{ uri: data.cards[0].image }} style={styles.image} />
               </TouchableOpacity>
@@ -153,7 +170,11 @@ export default function KFCHome() {
                   key={card.id}
                   style={styles.card}
                   onPress={() => {
-                    navigation.navigate('Menu', { categoryId: card.id });
+                    navigation.navigate('Menu', { 
+                      categoryId: card.id, 
+                      isDelivery: isDelivery,
+                      username: userProfile?.full_name || userProfile?.username || 'Guest'
+                    });
                     console.log(`Clicked on card ${card.id}`);
                   }}
                 >
@@ -170,7 +191,11 @@ export default function KFCHome() {
                   key={card.id}
                   style={styles.card}
                   onPress={() => {
-                    navigation.navigate('Menu', { categoryId: card.id });
+                    navigation.navigate('Menu', { 
+                      categoryId: card.id, 
+                      isDelivery: isDelivery,
+                      username: userProfile?.full_name || userProfile?.username || 'Guest'
+                    });
                     console.log(`Clicked on card ${card.id}`);
                   }}
                 >
@@ -213,13 +238,30 @@ export default function KFCHome() {
         </View>
       </ScrollView>
 
-      {/* Fixed Bucket Icon */}
-      <TouchableOpacity style={styles.bucketIcon} onPress={() => navigation.navigate('Bucket')} accessibilityLabel="View bucket">
-        <Image 
-          source={require('../assets/bucket-icon.png')}
-          style={{ width: 80, height: 80 }}
-        />
-      </TouchableOpacity>
+      {/* Moveable Bucket Icon */}
+      <Animated.View
+        style={{
+          transform: [{ translateX: pan.x }, { translateY: pan.y }],
+          position: 'absolute',
+          bottom: 30,
+          right: 16,
+        }}
+        {...panResponder.panHandlers}
+      >
+        <TouchableOpacity
+          style={styles.bucketIcon}
+          onPress={() => navigation.navigate('Cart', { 
+            isDelivery: isDelivery,
+            username: userProfile?.username || 'Guest' 
+          })}
+          accessibilityLabel="View cart"
+        >
+          <Image 
+            source={require('../assets/bucket-icon.png')}
+            style={{ width: 80, height: 80 }}
+          />
+        </TouchableOpacity>
+      </Animated.View>
 
       {/* Side Menu Overlay */}
       {isSideMenuOpen && (
@@ -378,9 +420,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   bucketIcon: {
-    position: 'absolute',
-    bottom: 30,
-    right: 16,
     backgroundColor: '#dc2626',
     width: 56,
     height: 56,
@@ -398,7 +437,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 3,
     paddingTop: 5,
-    marginLeft:2,
+    marginLeft: 2,
     justifyContent: "center",
     alignItems: "center",
     borderStyle: 'dotted',
@@ -407,7 +446,7 @@ const styles = StyleSheet.create({
     paddingBottom: -5,
   },
   doubleCardView: {
-    paddingTop:5,
+    paddingTop: 5,
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",
@@ -480,3 +519,4 @@ const styles = StyleSheet.create({
     zIndex: 998,
   },
 });
+

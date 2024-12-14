@@ -1,41 +1,39 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import data from '../data.json';
 import { useNavigation } from '@react-navigation/native';
 
+interface HeaderProps {
+  isDelivery: boolean;
+  username: string;
+}
 
-const Header = () => {
+const Header: React.FC<HeaderProps> = ({ isDelivery, username }) => {
   const navigation = useNavigation();
-  return(
-  <View style={styles.header}>
-    <View style={styles.headerLeft}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={24} color="black" />
-      </TouchableOpacity>
-      <View style={styles.locationContainer}>
-        <Ionicons name="location-outline" size={20} color="black" />
-        <View>
-          <Text style={styles.pickupText}>Pickup From</Text>
-          <Text style={styles.locationText}>{"QDEVAAN"}</Text>
+
+  return (
+    <View style={styles.header}>
+      <View style={styles.headerLeft}>
+        <TouchableOpacity onPress={() => navigation.goBack()} accessibilityLabel="Go back">
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+        <View style={styles.locationContainer}>
+          <Ionicons name="location-outline" size={20} color="black" />
+          <View>
+            <Text style={styles.pickupText}>{isDelivery ? 'Delivery to' : 'Pickup from'}</Text>
+            <Text style={styles.username}>{username}</Text>
+          </View>
         </View>
       </View>
+      <View style={styles.headerRight}>
+        <Image 
+          source={require('../../assets/KFClogo.png')} 
+          style={styles.logo}
+        />
+      </View>
     </View>
-    <View style={styles.headerRight}>
-      <Image 
-        source={require('./KFClogo.png')} 
-        style={styles.logo}
-      />
-      {/* <TouchableOpacity>
-        <Ionicons name="search" size={24} color="black" />
-      </TouchableOpacity> */}
-      {/* <TouchableOpacity>
-        <Ionicons name="menu" size={24} color="black" />
-      </TouchableOpacity> */}
-    </View>
-  </View>
-);
-}
+  );
+};
 
 const styles = StyleSheet.create({
   header: {
@@ -43,6 +41,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
@@ -60,7 +59,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
   },
-  locationText: {
+  username: {
     fontSize: 16,
     fontWeight: 'bold',
   },
