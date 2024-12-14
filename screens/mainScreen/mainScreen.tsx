@@ -108,7 +108,7 @@ export default function KFCHome() {
             <Ionicons name="location-outline" size={20} color="black" />
             <View>
               <Text style={styles.pickupText}>{isDelivery ? 'Delivery to' : 'Pickup from'}</Text>
-              <Text style={styles.locationText}>{userProfile?.username || 'Guest'}</Text>
+              <Text style={styles.locationText}>{userProfile?.full_name || 'Guest'}</Text>
             </View>
           </View>
         </View>
@@ -146,7 +146,11 @@ export default function KFCHome() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Explore Menu</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Menu')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Menu',{ 
+                categoryId: data.cards[0].id, 
+                isDelivery: isDelivery,
+                username: userProfile?.full_name || userProfile?.username || 'Guest'
+              })}>
               <Text style={styles.viewAllText}>VIEW ALL</Text>
             </TouchableOpacity>
           </View>
