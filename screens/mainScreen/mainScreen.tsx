@@ -277,7 +277,7 @@ const panResponder = PanResponder.create({
     >
       <Image 
         source={require('../assets/bucket-icon.png')}
-        style={{ width: 80, height: 80 }}
+        style={{ width: 65, height: 65 }}
       />
     </TouchableOpacity>
   </Animated.View>
@@ -439,10 +439,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   bucketIcon: {
-    backgroundColor: '#dc2626',
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    // backgroundColor: '#dc2626',
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    borderStyle: 'dotted',
+    borderWidth: 1,
+    // borderColor: '#dc2626',
     justifyContent: 'center',
     alignItems: 'center',
   },
