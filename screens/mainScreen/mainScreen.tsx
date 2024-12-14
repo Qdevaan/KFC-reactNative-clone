@@ -20,16 +20,26 @@ export default function KFCHome() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const pan = useRef(new Animated.ValueXY()).current;
 
-  const panResponder = PanResponder.create({
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderMove: Animated.event([
+  let isDragging = false;
+
+const panResponder = PanResponder.create({
+  onMoveShouldSetPanResponder: (evt, gestureState) => {
+    // Only set the pan responder for significant movement
+    isDragging = Math.abs(gestureState.dx) > 5 || Math.abs(gestureState.dy) > 5;
+    return isDragging;
+  },
+  onPanResponderMove: Animated.event(
+    [
       null,
-      { dx: pan.x, dy: pan.y }
-    ], { useNativeDriver: false }),
-    onPanResponderRelease: () => {
-      pan.extractOffset();
-    }
-  });
+      { dx: pan.x, dy: pan.y },
+    ],
+    { useNativeDriver: false }
+  ),
+  onPanResponderRelease: () => {
+    pan.extractOffset();
+    isDragging = false; // Reset drag state
+  },
+});
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -244,28 +254,33 @@ export default function KFCHome() {
 
       {/* Moveable Bucket Icon */}
       <Animated.View
-        style={{
-          transform: [{ translateX: pan.x }, { translateY: pan.y }],
-          position: 'absolute',
-          bottom: 30,
-          right: 16,
-        }}
-        {...panResponder.panHandlers}
-      >
-        <TouchableOpacity
-          style={styles.bucketIcon}
-          onPress={() => navigation.navigate('Cart', { 
+    style={{
+      transform: [{ translateX: pan.x }, { translateY: pan.y }],
+      position: 'absolute',
+      bottom: 30,
+      right: 16,
+    }}
+    {...panResponder.panHandlers}
+  >
+    <TouchableOpacity
+      style={styles.bucketIcon}
+      onPress={() => {
+        if (!isDragging) {
+          // navigation.navigate('Bucket');
+          navigation.navigate('Bucket', { 
             isDelivery: isDelivery,
-            username: userProfile?.full_name || userProfile?.username || 'Guest'
-          })}
-          accessibilityLabel="View cart"
-        >
-          <Image 
-            source={require('../assets/bucket-icon.png')}
-            style={{ width: 80, height: 80 }}
-          />
-        </TouchableOpacity>
-      </Animated.View>
+            username: userProfile?.full_name || userProfile?.username || 'Guest',
+          });
+        }
+      }}
+      accessibilityLabel="View cart"
+    >
+      <Image 
+        source={require('../assets/bucket-icon.png')}
+        style={{ width: 80, height: 80 }}
+      />
+    </TouchableOpacity>
+  </Animated.View>
 
       {/* Side Menu Overlay */}
       {isSideMenuOpen && (
