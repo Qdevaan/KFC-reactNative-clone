@@ -257,7 +257,6 @@ export default function KFCHome() {
           onPress={() => navigation.navigate('Cart', { 
             isDelivery: isDelivery,
             username: userProfile?.full_name || userProfile?.username || 'Guest'
- 
           })}
           accessibilityLabel="View cart"
         >
