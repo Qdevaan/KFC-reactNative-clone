@@ -1,4 +1,4 @@
-import { Product, productData } from './productData2';
+import { Product, productData } from './productData';
 
 export interface Promotion {
   id: number;

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Product } from '../../data/productData2';
+import { Product } from '../../data/productData';
 
 export type CartItem = Product & {
   quantity: number;

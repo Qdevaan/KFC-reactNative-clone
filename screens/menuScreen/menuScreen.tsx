@@ -8,7 +8,7 @@ import CategoryTabs from './components/CategoryTabs';
 import MenuItem from './components/MenuItem';
 import { CartProvider, useCart } from '../cartScreen/CartContext';
 import { menuCategories, menuCategoryItems, getProductsByIds } from '../../data/menuData';
-import { Product } from '../../data/productData2';
+import { Product } from '../../data/productData';
 
 type RouteParams = {
   params: {

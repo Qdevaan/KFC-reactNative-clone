@@ -7,9 +7,7 @@ import { Footer } from './Footer';
 import { HEADER_MAX_HEIGHT } from './types';
 import { useCart , CartProvider } from '../cartScreen/CartContext';
 import { getProductById } from '../../data/menuData';
-import { Product } from '../../data/productData2';
-
-type RouteParams = {
+import { Product } from '../../data/productData';type RouteParams = {
   Description: {
     id: number;
   };
@@ -21,41 +19,45 @@ function DescriptionScreen() {
   const productId = route.params?.id;
 
   const [selectedItems, setSelectedItems] = useState<{ [key: number]: number }>({});
+  const [selectedMainItem, setSelectedMainItem] = useState(productId);
   const scrollY = useRef(new Animated.Value(0)).current;
-  const [quantity, setQuantity] = useState(1);
 
   const { addToCart } = useCart();
-
-  useEffect(() => {
-    console.log('Product ID:', typeof(route.params));
-  }, [route.params?.id]);
 
   useEffect(() => {
     const selectedProduct = getProductById(productId);
     if (selectedProduct) {
       console.log('Selected product:', selectedProduct);
-      setSelectedItems({ [selectedProduct.id]: 1 });
+      setSelectedItems({ [selectedProduct.id]: selectedProduct.isCompulsory ? 1 : 0 });
     } else {
       console.log('Product not found:', productId);
     }
   }, [productId]);
 
   const addItem = (itemId: number) => {
-    setSelectedItems((prev) => ({
-      ...prev,
-      [itemId]: (prev[itemId] || 0) + 1,
-    }));
+    const product = getProductById(itemId);
+    if (product) {
+      setSelectedItems((prev) => ({
+        ...prev,
+        [itemId]: (prev[itemId] || 0) + 1,
+      }));
+    }
   };
 
   const removeItem = (itemId: number) => {
-    setSelectedItems((prev) => {
-      const next = { ...prev };
-      if (next[itemId] > 1)
-        next[itemId]--;
-      else
-        delete next[itemId];
-      return next;
-    });
+    const product = getProductById(itemId);
+    if (product && !product.isCompulsory) {
+      setSelectedItems((prev) => {
+        const next = { ...prev };
+        if (next[itemId] > 0) {
+          next[itemId]--;
+        }
+        if (next[itemId] === 0) {
+          delete next[itemId];
+        }
+        return next;
+      });
+    }
   };
 
   const totalPrice = Object.entries(selectedItems).reduce((sum, [itemId, quantity]) => {
@@ -96,7 +98,7 @@ function DescriptionScreen() {
     const orderDetails = {
       id: selectedProduct.id.toString(),
       name: selectedProduct.name,
-      quantity: selectedItems[selectedProduct.id],
+      quantity: 1,
       price: selectedProduct.price,
       image: selectedProduct.image,
       addOns: addedAddOns || [],
@@ -129,7 +131,7 @@ function DescriptionScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <Header scrollY={scrollY} selectedItems={selectedItems} menuItem={selectedProduct} />
-      
+
       <Animated.ScrollView
         style={styles.scrollView}
         onScroll={Animated.event(
@@ -142,15 +144,14 @@ function DescriptionScreen() {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Choose an option</Text>
-              <Text style={styles.sectionType}>Required</Text>
+              <Text style={styles.sectionType}>{selectedProduct.isCompulsory ? 'Required' : 'Optional'}</Text>
             </View>
             <MenuItem
               key={selectedProduct.id}
               item={selectedProduct}
-              quantity={selectedItems[selectedProduct.id] || 0}
-              onAdd={() => addItem(selectedProduct.id)}
-              onRemove={() => removeItem(selectedProduct.id)}
-              type="required"
+              isSelected={selectedMainItem === selectedProduct.id}
+              onSelect={() => setSelectedMainItem(selectedProduct.id)}
+              type={selectedProduct.isCompulsory ? "required" : "optional"}
             />
           </View>
           {addOns && addOns.length > 0 && (
@@ -194,22 +195,7 @@ function DescriptionScreen() {
       </Animated.ScrollView>
 
       <Footer
-        quantity={quantity}
         totalPrice={totalPrice}
-        onDecreaseQuantity={() => {
-          setQuantity(Math.max(1, quantity - 1));
-          setSelectedItems((prev) => ({
-            ...prev,
-            [selectedProduct.id]: Math.max(1, quantity - 1),
-          }));
-        }}
-        onIncreaseQuantity={() => {
-          setQuantity(quantity + 1);
-          setSelectedItems((prev) => ({
-            ...prev,
-            [selectedProduct.id]: quantity + 1,
-          }));
-        }}
         onAddToBucket={addToBucket}
       />
     </SafeAreaView>

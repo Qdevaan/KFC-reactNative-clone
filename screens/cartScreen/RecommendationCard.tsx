@@ -1,6 +1,6 @@
 import React from 'react'
 import { TouchableOpacity, Image, Text, StyleSheet, View, Animated } from 'react-native'
-import { Product } from '../../data/productData2'
+import { Product } from '../../data/productData'
 
 interface RecommendationCardProps {
   item: Product;
