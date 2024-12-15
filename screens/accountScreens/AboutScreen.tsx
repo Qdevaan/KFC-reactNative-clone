@@ -40,13 +40,19 @@ const AboutScreen: React.FC = () => {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>Technologies Used</Text>
           <View style={styles.technologiesContainer}>
-            <View style={styles.technologyCard}>
-              <MaterialCommunityIcons name="react" size={40} color="#61dafb" />
-              <Text style={styles.technologyText}>React Native</Text>
+
+          <View style={styles.technologyCard}>
+              <MaterialCommunityIcons name="alpha-e-box" size={38} color="#000" />
+              <Text style={styles.technologyText}>Expo</Text>
             </View>
             <View style={styles.technologyCard}>
-              <MaterialCommunityIcons name="alpha-e-box" size={40} color="#000" />
-              <Text style={styles.technologyText}>Expo</Text>
+              <MaterialCommunityIcons name="react" size={38} color="#000" />
+              <Text style={styles.technologyText}>React Native</Text>
+            </View>
+            
+            <View style={styles.technologyCard}>
+              <MaterialCommunityIcons name="language-typescript" size={38} color="#000" />
+              <Text style={styles.technologyText}>TypeScript</Text>
             </View>
           </View>
         </View>
@@ -131,13 +137,15 @@ const styles = StyleSheet.create({
   },
   technologiesContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginTop: 10,
   },
   technologyCard: {
     alignItems: 'center',
+    marginLeft:-3,
     // backgroundColor: '#f3f4f6',
     paddingVertical: 15,
+    justifyContent: 'space-around',
     paddingHorizontal: 20,
     borderRadius: 10,
     // shadowColor: '#000',
