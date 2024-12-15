@@ -165,7 +165,7 @@ export default function AccountScreen({ navigation }) {
           />
         </View>
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Website</Text>
+          <Text style={styles.label}>Address</Text>
           <TextInput
             style={styles.input}
             value={website}
