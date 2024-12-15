@@ -46,11 +46,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const addToCart = (item: Product) => {
     setCart(prevItems => {
-      const existingItem = prevItems.find(i => i.id === item.id);
-      if (existingItem) {
-        return prevItems.map(i => 
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-        );
+      const existingItemIndex = prevItems.findIndex(i => i.id === item.id);
+      if (existingItemIndex !== -1) {
+        const updatedItems = [...prevItems];
+        updatedItems[existingItemIndex] = {
+          ...updatedItems[existingItemIndex],
+          quantity: updatedItems[existingItemIndex].quantity + 1
+        };
+        return updatedItems;
       } else {
         return [...prevItems, { ...item, quantity: 1 }];
       }
@@ -65,10 +68,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCart(prevItems => {
       return prevItems.map(item => {
         if (item.id === id) {
-          const newQuantity = Math.max(0, item.quantity + change);
-          if (newQuantity === 0) {
-            return item; // Keep the item in the cart with quantity 1
-          }
+          const newQuantity = Math.max(1, item.quantity + change);
           return { ...item, quantity: newQuantity };
         }
         return item;

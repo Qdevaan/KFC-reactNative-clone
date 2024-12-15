@@ -7,9 +7,9 @@ import HomeScreen from './screens/mainScreen/mainScreen';
 import MenuScreen from './screens/menuScreen/menuScreen';
 import DescriptionScreen from './screens/descriptionScreen/descriptionScreen';
 import BucketScreen from './screens/cartScreen/cartScreen';
-import AboutScreen from './screens/AboutScreen';
-import LoginScreen from './screens/LoginScreen';
-import AccountScreen from './screens/AccountScreen';
+import AboutScreen from './screens/accountScreens/AboutScreen';
+import LoginScreen from './screens/accountScreens/LoginScreen';
+import AccountScreen from './screens/accountScreens/AccountScreen';
 import * as ImagePicker from 'expo-image-picker';
 
 const Stack = createStackNavigator();
