@@ -1,7 +1,15 @@
 import React, { useRef, useEffect } from 'react'
 import { View, Text, Image, TouchableOpacity, StyleSheet, Animated } from 'react-native'
+import { CartItem as CartItemType } from './CartContext';
 
-const CartItem = ({ item, quantity, onIncrease, onDecrease }) => {
+interface CartItemProps {
+  item: CartItemType;
+  quantity: number;
+  onIncrease: () => void;
+  onDecrease: () => void;
+}
+
+const CartItem: React.FC<CartItemProps> = ({ item, quantity, onIncrease, onDecrease }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
@@ -47,11 +55,6 @@ const styles = StyleSheet.create({
     marginBottom: -4,
     borderTopColor: '#f0f0f0',
     borderTopWidth: 1,
-    // shadowColor: '#000',
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.1,
-    // shadowRadius: 4,
-    // elevation: 3,
   },
   itemContent: {
     flexDirection: 'row',
@@ -85,16 +88,16 @@ const styles = StyleSheet.create({
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 8,
+    justifyContent: 'flex-end',
   },
   quantityButton: {
     width: 20,
     height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderRadius: 4,
     borderWidth: 1,
     borderColor: 'black',
-
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   quantityButtonText: {
     fontSize: 12,
@@ -106,37 +109,6 @@ const styles = StyleSheet.create({
     color: 'black',
     marginHorizontal: 8,
   },
-
-
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  quantityButton: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: 'black',
-    //backgroundColor: '#f0f0f0',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-
-  },
-  // quantityButtonText: {
-  //   fontSize: 20,
-  //   fontWeight: 'bold',
-  //   color: 'black',
-  //   textAlign: 'center',justifyContent: 'center',alignContent: 'center',
-  // },
-  // quantityText: {
-  //   color: '#000',
-  //   fontSize: 16,
-  //   marginHorizontal: 16,
-  //   fontWeight: '500',
-  // },
 })
 
 export default CartItem

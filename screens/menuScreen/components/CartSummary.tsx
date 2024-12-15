@@ -1,23 +1,31 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useCart } from '../cartScreen/CartContext';
 
-const CartSummary = () => (
-  <View style={styles.cartSummary}>
-    <View style={styles.cartLeft}>
-      <Image 
-        source={require('./menu (1).png')} 
-        style={styles.cartThumb}
-      />
-      <Text style={styles.cartItems}>3 items</Text>
+const CartSummary = () => {
+  const { cart } = useCart();
+  
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  return (
+    <View style={styles.cartSummary}>
+      <View style={styles.cartLeft}>
+        <Image 
+          source={require('./menu (1).png')} 
+          style={styles.cartThumb}
+        />
+        <Text style={styles.cartItems}>{totalItems} items</Text>
+      </View>
+      <TouchableOpacity style={styles.viewBucketButton}>
+        <Text style={styles.viewBucketText}>Rs {totalPrice.toFixed(2)}</Text>
+        <Text style={styles.viewBucketText}>View Bucket</Text>
+        <Ionicons name="chevron-forward" size={24} color="white" />
+      </TouchableOpacity>
     </View>
-    <TouchableOpacity style={styles.viewBucketButton}>
-      <Text style={styles.viewBucketText}>Rs 1410</Text>
-      <Text style={styles.viewBucketText}>View Bucket</Text>
-      <Ionicons name="chevron-forward" size={24} color="white" />
-    </TouchableOpacity>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   cartSummary: {

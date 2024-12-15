@@ -11,6 +11,7 @@ interface MenuItemProps {
   onToggleFavorite: () => void;
   isFavorite: boolean;
 }
+
 const showToast = (message: string) => {
   ToastAndroid.show(message, ToastAndroid.SHORT);
 };
@@ -51,7 +52,6 @@ const MenuItem: React.FC<MenuItemProps> = ({
           <Text style={styles.price}>Rs {price.toFixed(2)}</Text>
           <TouchableOpacity 
             style={styles.addButton} 
-            onPress={onAddToBucket}
             onPress={() => {
               showToast('Added to Bucket');
               onAddToBucket();
@@ -168,3 +168,4 @@ const styles = StyleSheet.create({
 });
 
 export default MenuItem;
+

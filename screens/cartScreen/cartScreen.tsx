@@ -17,7 +17,8 @@ import RecommendationCard from './RecommendationCard';
 import Header from '../menuScreen/components/Header';
 import BottomBar from './BottomBar';
 import { CartProvider, useCart } from './CartContext';
-import cartData from '../../data/cartScreenData.json';
+import { recommendations } from '../../data/menuData';
+import { getProductById } from '../../data/menuData';
 
 export default function App() {
   return (
@@ -30,8 +31,7 @@ export default function App() {
 function CartScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { cartItems, updateQuantity, removeItem, addToCart } = useCart();
-  const [recommendations, setRecommendations] = useState(cartData.recommendations);
+  const { cart, updateQuantity, removeFromCart, addToCart } = useCart();
   const [lastAddedItem, setLastAddedItem] = useState(null);
   const [isDelivery, setIsDelivery] = useState(route.params?.isDelivery || false);
   const [username, setUsername] = useState(route.params?.username || 'Guest');
@@ -46,13 +46,13 @@ function CartScreen() {
   }, []);
 
   const handleUpdateQuantity = (id, change) => {
-    if (change < 0 && cartItems.find(item => item.id === id)?.quantity === 1) {
+    if (change < 0 && cart.find(item => item.id === id)?.quantity === 1) {
       Alert.alert(
         "Remove Item",
         "Are you sure you want to remove this item from your cart?",
         [
           { text: "Cancel", style: "cancel" },
-          { text: "Remove", onPress: () => removeItem(id) }
+          { text: "Remove", onPress: () => removeFromCart(id) }
         ]
       );
     } else {
@@ -61,12 +61,15 @@ function CartScreen() {
   };
 
   const handleAddToCart = (item) => {
-    addToCart(item);
-    setLastAddedItem(item);
+    const productToAdd = getProductById(item.id);
+    if (productToAdd) {
+      addToCart(productToAdd);
+      setLastAddedItem(productToAdd);
+    }
   };
 
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const totalAmount = cartItems.length === 0 ? 0 : Math.round(totalPrice * 1.16 + 50);
+  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalAmount = cart.length === 0 ? 0 : Math.round(totalPrice * 1.16 + 50);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -78,7 +81,7 @@ function CartScreen() {
         style={[styles.content, { opacity: fadeAnim }]}
         showsVerticalScrollIndicator={false}
       >
-        {cartItems.map(item => (
+        {cart.map(item => (
           <CartItem
             key={item.id}
             item={item}
@@ -137,14 +140,14 @@ function CartScreen() {
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
-            data={recommendations}
+            data={recommendations.map(id => getProductById(id)).filter(Boolean)}
             renderItem={({ item }) => (
               <RecommendationCard
                 item={item}
                 onPress={() => handleAddToCart(item)}
               />
             )}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.id.toString()}
             contentContainerStyle={styles.recommendationsList}
           />
         </View>
@@ -152,9 +155,9 @@ function CartScreen() {
 
       <BottomBar
         totalAmount={totalAmount}
-        itemCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
-        lastItemImage={lastAddedItem?.image || cartItems[cartItems.length - 1]?.image}
-        isCheckoutDisabled={cartItems.length === 0}
+        itemCount={cart.reduce((sum, item) => sum + item.quantity, 0)}
+        lastItemImage={lastAddedItem?.image || cart[cart.length - 1]?.image}
+        isCheckoutDisabled={cart.length === 0}
       />
     </SafeAreaView>
   );

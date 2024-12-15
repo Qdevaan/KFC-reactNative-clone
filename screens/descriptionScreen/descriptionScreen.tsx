@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { SafeAreaView, View, StyleSheet, Animated, Text } from 'react-native';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
-import { MenuItem } from './MenuItem';
+import  MenuItem  from './MenuItem';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { HEADER_MAX_HEIGHT } from './types';
-import { MenuItem as MenuItemType } from '../../data/menuDataTypes';
-import { menuData } from '../../data/productData';
 import { useCart , CartProvider } from '../cartScreen/CartContext';
+import { getProductById } from '../../data/menuData';
+import { Product } from '../../data/productData2';
 
 type RouteParams = {
   Description: {
@@ -31,7 +31,7 @@ function DescriptionScreen() {
   }, [route.params?.id]);
 
   useEffect(() => {
-    const selectedProduct = menuData.menuItems.find(item => item.id === productId);
+    const selectedProduct = getProductById(productId);
     if (selectedProduct) {
       console.log('Selected product:', selectedProduct);
       setSelectedItems({ [selectedProduct.id]: 1 });
@@ -59,12 +59,12 @@ function DescriptionScreen() {
   };
 
   const totalPrice = Object.entries(selectedItems).reduce((sum, [itemId, quantity]) => {
-    const item = menuData.menuItems.find(item => item.id === Number(itemId));
+    const item = getProductById(Number(itemId));
     return sum + (item?.price || 0) * quantity;
   }, 0);
 
   const addToBucket = () => {
-    const selectedProduct = menuData.menuItems.find((item) => item.id === productId);
+    const selectedProduct = getProductById(productId);
 
     if (!selectedProduct) {
       console.error('Selected product not found');
@@ -72,25 +72,25 @@ function DescriptionScreen() {
     }
 
     const addedAddOns = selectedProduct.addOns
-      ?.map(id => menuData.menuItems.find(item => item.id === id))
-      .filter((item): item is MenuItemType => !!item && !!selectedItems[item.id])
+      ?.map(id => getProductById(id))
+      .filter((item): item is Product => !!item && !!selectedItems[item.id])
       .map(item => ({
         id: item.id.toString(),
         name: item.name,
         quantity: selectedItems[item.id],
         price: item.price,
-        image: item.image || ''
+        image: item.image
       }));
 
     const addedDrinks = selectedProduct.drinks
-      ?.map(id => menuData.menuItems.find(item => item.id === id))
-      .filter((item): item is MenuItemType => !!item && !!selectedItems[item.id])
+      ?.map(id => getProductById(id))
+      .filter((item): item is Product => !!item && !!selectedItems[item.id])
       .map(item => ({
         id: item.id.toString(),
         name: item.name,
         quantity: selectedItems[item.id],
         price: item.price,
-        image: item.image || ''
+        image: item.image
       }));
 
     const orderDetails = {
@@ -98,7 +98,7 @@ function DescriptionScreen() {
       name: selectedProduct.name,
       quantity: selectedItems[selectedProduct.id],
       price: selectedProduct.price,
-      image: selectedProduct.image || '',
+      image: selectedProduct.image,
       addOns: addedAddOns || [],
       drinks: addedDrinks || [],
     };
@@ -117,14 +117,14 @@ function DescriptionScreen() {
     return <Text>No product ID provided</Text>;
   }
 
-  const selectedProduct = menuData.menuItems.find(item => item.id === productId);
+  const selectedProduct = getProductById(productId);
 
   if (!selectedProduct) {
     return <Text>Product not found (ID: {productId})</Text>;
   }
 
-  const addOns = selectedProduct.addOns?.map(id => menuData.menuItems.find(item => item.id === id)).filter((item): item is MenuItemType => !!item);
-  const drinks = selectedProduct.drinks?.map(id => menuData.menuItems.find(item => item.id === id)).filter((item): item is MenuItemType => !!item);
+  const addOns = selectedProduct.addOns?.map(id => getProductById(id)).filter((item): item is Product => !!item);
+  const drinks = selectedProduct.drinks?.map(id => getProductById(id)).filter((item): item is Product => !!item);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -258,3 +258,4 @@ const styles = StyleSheet.create({
     height: 100,
   },
 });
+

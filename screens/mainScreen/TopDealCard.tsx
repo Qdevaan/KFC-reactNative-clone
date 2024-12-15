@@ -2,13 +2,14 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity,ToastAndroid, StyleSheet } from 'react-native';
 
 type TopDealCardProps = {
+  id: number;
   name: string;
-  price: string;
+  price: number;
   image: string;
   description: string;
 };
 
-export default function TopDealCard({ name, price, image, description }: TopDealCardProps) {
+export default function TopDealCard({ id, name, price, image, description }: TopDealCardProps) {
   const showToast = (message) => {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   };
@@ -19,9 +20,6 @@ export default function TopDealCard({ name, price, image, description }: TopDeal
       <View style={styles.content}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.price}>PKR:{price}</Text>
-        {/* <TouchableOpacity style={styles.viewButton}>
-          <Text style={styles.viewButtonText}>VIEW</Text>
-        </TouchableOpacity> */}
           <Text style={styles.viewButtonText}>VIEW</Text>
 
       </View>
@@ -95,3 +93,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+

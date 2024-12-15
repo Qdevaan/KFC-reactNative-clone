@@ -1,17 +1,14 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Product } from '../../data/productData2';
 
-type CartItem = {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
+export type CartItem = Product & {
   quantity: number;
 };
 
 type CartContextType = {
-  cartItems: CartItem[];
-  addToCart: (item: CartItem) => void;
+  cart: CartItem[];
+  addToCart: (item: Product) => void;
   removeFromCart: (id: number) => void;
   updateQuantity: (id: number, change: number) => void;
   clearCart: () => void;
@@ -20,14 +17,14 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
 
   useEffect(() => {
     const loadCartItems = async () => {
       try {
         const savedCartItems = await AsyncStorage.getItem('cartItems');
         if (savedCartItems) {
-          setCartItems(JSON.parse(savedCartItems));
+          setCart(JSON.parse(savedCartItems));
         }
       } catch (error) {
         console.error('Error loading cart items:', error);
@@ -39,16 +36,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const saveCartItems = async () => {
       try {
-        await AsyncStorage.setItem('cartItems', JSON.stringify(cartItems));
+        await AsyncStorage.setItem('cartItems', JSON.stringify(cart));
       } catch (error) {
         console.error('Error saving cart items:', error);
       }
     };
     saveCartItems();
-  }, [cartItems]);
+  }, [cart]);
 
-  const addToCart = (item: CartItem) => {
-    setCartItems(prevItems => {
+  const addToCart = (item: Product) => {
+    setCart(prevItems => {
       const existingItem = prevItems.find(i => i.id === item.id);
       if (existingItem) {
         return prevItems.map(i => 
@@ -60,12 +57,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
-  const removeItem = (id: number) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== id));
+  const removeFromCart = (id: number) => {
+    setCart(prevItems => prevItems.filter(item => item.id !== id));
   };
 
   const updateQuantity = (id: number, change: number) => {
-    setCartItems(prevItems => {
+    setCart(prevItems => {
       return prevItems.map(item => {
         if (item.id === id) {
           const newQuantity = Math.max(0, item.quantity + change);
@@ -80,11 +77,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const clearCart = () => {
-    setCartItems([]);
+    setCart([]);
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeItem, updateQuantity, clearCart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart }}>
       {children}
     </CartContext.Provider>
   );

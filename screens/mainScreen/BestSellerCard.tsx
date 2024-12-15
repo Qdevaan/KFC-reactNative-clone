@@ -2,16 +2,17 @@ import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
 type BestSellerCardProps = {
+  id: number;
   name: string;
-  price: string;
+  price: number;
   image: string;
 };
 
-export default function BestSellerCard({ name, price, image }: BestSellerCardProps) {
+export default function BestSellerCard({ id, name, price, image }: BestSellerCardProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.name}>{name}</Text>
-      <Text style={styles.price}>{price}</Text>
+      <Text style={styles.price}>PKR {price}</Text>
       <Image source={{ uri: image }} style={styles.image} />
 
     </View>
@@ -66,3 +67,4 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
+

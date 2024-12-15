@@ -8,7 +8,7 @@ import BestSellerCard from './BestSellerCard';
 import TopDealCard from './TopDealCard';
 import DeliveryToggle from './DeliveryToggle';
 import SideMenu from './SideMenu';
-import data from '../../data/mainScreenData.json';
+import { promotions, menuCategories, bestSellers, topDeals, getProductsByIds } from '../../data/menuData';
 
 export default function KFCHome() {
   const navigation = useNavigation();
@@ -138,7 +138,7 @@ const panResponder = PanResponder.create({
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>What's new</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {data.promotions.map((promo) => (
+              {promotions.map((promo) => (
                 <TouchableOpacity key={promo.id} onPress={() => showToast(`Clicked on promotion ${promo.id}`)}>
                   <PromotionCard {...promo} />
                 </TouchableOpacity>
@@ -157,7 +157,7 @@ const panResponder = PanResponder.create({
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Explore Menu</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Menu',{ 
-                categoryId: data.cards[0].id, 
+                categoryId: menuCategories[0].id, 
                 isDelivery: isDelivery,
                 username: userProfile?.full_name || userProfile?.username || 'Guest'
               })}>
@@ -168,18 +168,18 @@ const panResponder = PanResponder.create({
             {/* View 1: Main Card */}
             <View style={styles.singleCardView}>
               <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Menu', { 
-                categoryId: data.cards[0].id, 
+                categoryId: menuCategories[0].id, 
                 isDelivery: isDelivery,
                 username: userProfile?.full_name || userProfile?.username || 'Guest'
               })}>
-                <Text style={styles.title}>{data.cards[0].title}</Text>
-                <Image source={{ uri: data.cards[0].image }} style={styles.image} />
+                <Text style={styles.title}>{menuCategories[0].title}</Text>
+                <Image source={{ uri: menuCategories[0].image }} style={styles.image} />
               </TouchableOpacity>
             </View>
 
-            {/* View 2: Two data.cards */}
+            {/* View 2: Two menuCategories */}
             <View style={styles.doubleCardView}>
-              {data.cards.slice(1, 3).map((card) => (
+              {menuCategories.slice(1, 3).map((card) => (
                 <TouchableOpacity
                   key={card.id}
                   style={styles.card}
@@ -198,9 +198,9 @@ const panResponder = PanResponder.create({
               ))}
             </View>
 
-            {/* View 3: Two data.cards */}
+            {/* View 3: Two menuCategories */}
             <View style={styles.doubleCardView}>
-              {data.cards.slice(3).map((card) => (
+              {menuCategories.slice(3).map((card) => (
                 <TouchableOpacity
                   key={card.id}
                   style={styles.card}
@@ -225,7 +225,7 @@ const panResponder = PanResponder.create({
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Best Sellers</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {data.bestSellers.map((item) => (
+            {getProductsByIds(bestSellers).map((item) => (
               <TouchableOpacity key={item.id} onPress={() => { console.log(`Clicked on best seller ${item.id}`); navigation.navigate('Description', { id: item.id }); }}>
                 <BestSellerCard {...item} />
               </TouchableOpacity>
@@ -237,7 +237,7 @@ const panResponder = PanResponder.create({
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Top Deals</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {data.topDeals.map((deal) => (
+            {getProductsByIds(topDeals).map((deal) => (
               <TouchableOpacity key={deal.id} onPress={() => { console.log(`Clicked on top deal ${deal.id}`); navigation.navigate('Description', { id: deal.id }); }}>
                 <TopDealCard {...deal} />
               </TouchableOpacity>

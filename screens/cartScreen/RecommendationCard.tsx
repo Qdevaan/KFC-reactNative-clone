@@ -1,7 +1,13 @@
 import React from 'react'
 import { TouchableOpacity, Image, Text, StyleSheet, View, Animated } from 'react-native'
+import { Product } from '../../data/productData2'
 
-const RecommendationCard = ({ item, onPress }) => (
+interface RecommendationCardProps {
+  item: Product;
+  onPress: () => void;
+}
+
+const RecommendationCard: React.FC<RecommendationCardProps> = ({ item, onPress }) => (
   <Animated.View 
     style={styles.recommendationCard}
     //entering={Animated.FadeInRight.duration(500).delay(200)}
@@ -60,3 +66,4 @@ const styles = StyleSheet.create({
 })
 
 export default RecommendationCard
+

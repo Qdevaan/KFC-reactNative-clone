@@ -3,15 +3,16 @@ import { View, StyleSheet, SafeAreaView, StatusBar, Text, FlatList } from 'react
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { supabase } from '../../lib/supabase';
 import Header from './components/Header';
-import data from '../../data/menuScreenData.json';
 import DeliveryToggle from '../mainScreen/DeliveryToggle';
 import CategoryTabs from './components/CategoryTabs';
 import MenuItem from './components/MenuItem';
 import { CartProvider, useCart } from '../cartScreen/CartContext';
+import { menuCategories, menuCategoryItems, getProductsByIds } from '../../data/menuData';
+import { Product } from '../../data/productData2';
 
 type RouteParams = {
   params: {
-    categoryId: string;
+    categoryId: number;
     isDelivery: boolean;
     username: string;
   };
@@ -21,9 +22,8 @@ function MenuScreen() {
   const route = useRoute<RouteProp<RouteParams, 'params'>>();
   const navigation = useNavigation();
   const { addToCart } = useCart();
-  const categoryId = route.params?.categoryId || '1';
-  const number = parseInt(categoryId, 10);
-  const [activeCategory, setActiveCategory] = useState(data.categories[number - 1]);
+  const categoryId = route.params?.categoryId || 1;
+  const [activeCategory, setActiveCategory] = useState(menuCategories[categoryId - 1].title);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [isDelivery, setIsDelivery] = useState(route.params?.isDelivery || false);
   const [username, setUsername] = useState(route.params?.username || 'Guest');
@@ -47,9 +47,9 @@ function MenuScreen() {
     fetchUserProfile();
   }, []);
 
-  const getCategoryItems = (category: string) => {
-    const key = category.toLowerCase().replace(/[^a-z]/g, '') + 'items';
-    return data[key as keyof typeof data] || [];
+  const getCategoryItems = (category: string): Product[] => {
+    const categoryItemIds = menuCategoryItems[category] || [];
+    return getProductsByIds(categoryItemIds);
   };
 
   const toggleFavorite = (itemId: number) => {
@@ -60,7 +60,7 @@ function MenuScreen() {
     );
   };
 
-  const handleAddToBucket = (item: any) => {
+  const handleAddToBucket = (item: Product) => {
     addToCart({
       id: item.id,
       name: item.name,
@@ -71,7 +71,7 @@ function MenuScreen() {
     console.log('Added to bucket:', item.name);
   };
 
-  const renderItem = ({ item }: { item: any }) => (
+  const renderItem = ({ item }: { item: Product }) => (
     <MenuItem
       name={item.name}
       description={item.description}
@@ -90,7 +90,7 @@ function MenuScreen() {
       <Header isDelivery={isDelivery} username={username} />
       <DeliveryToggle isDelivery={isDelivery} setIsDelivery={setIsDelivery} />
       <CategoryTabs 
-        categories={data.categories}
+        categories={menuCategories.map(cat => cat.title)}
         activeCategory={activeCategory}
         onSelectCategory={setActiveCategory}
       />
