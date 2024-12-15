@@ -1,17 +1,22 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { SafeAreaView, View, StyleSheet, Animated, Text } from 'react-native';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
-import  MenuItem  from './MenuItem';
+import MenuItem from './MenuItem';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { HEADER_MAX_HEIGHT } from './types';
-import { useCart , CartProvider } from '../cartScreen/CartContext';
+import { useCart, CartProvider } from '../cartScreen/CartContext';
 import { getProductById } from '../../data/menuData';
-import { Product } from '../../data/productData';type RouteParams = {
+import { Product } from '../../data/productData';
+
+type RouteParams = {
   Description: {
     id: number;
   };
 };
+
+const HEADER_MAX_HEIGHT = 300;
+const HEADER_MIN_HEIGHT = 120;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 function DescriptionScreen() {
   const route = useRoute<RouteProp<RouteParams, 'Description'>>();
@@ -20,6 +25,7 @@ function DescriptionScreen() {
 
   const [selectedItems, setSelectedItems] = useState<{ [key: number]: number }>({});
   const [selectedMainItem, setSelectedMainItem] = useState(productId);
+  const [mainItemQuantity, setMainItemQuantity] = useState(1);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const { addToCart } = useCart();
@@ -60,14 +66,32 @@ function DescriptionScreen() {
     }
   };
 
-  const totalPrice = Object.entries(selectedItems).reduce((sum, [itemId, quantity]) => {
-    const item = getProductById(Number(itemId));
-    return sum + (item?.price || 0) * quantity;
-  }, 0);
+  const increaseMainItemQuantity = () => {
+    setMainItemQuantity(prev => prev + 1);
+  };
+
+  const decreaseMainItemQuantity = () => {
+    setMainItemQuantity(prev => (prev > 1 ? prev - 1 : 1));
+  };
+
+  const selectedProduct = getProductById(productId);
+
+  const totalPrice = useMemo(() => {
+    if (!selectedProduct) return 0;
+
+    const mainItemPrice = selectedProduct.price * mainItemQuantity;
+    const addOnsPrice = Object.entries(selectedItems).reduce((sum, [itemId, quantity]) => {
+      if (Number(itemId) !== selectedProduct.id) {
+        const item = getProductById(Number(itemId));
+        return sum + (item?.price || 0) * quantity;
+      }
+      return sum;
+    }, 0);
+
+    return mainItemPrice + addOnsPrice;
+  }, [selectedProduct, mainItemQuantity, selectedItems]);
 
   const addToBucket = () => {
-    const selectedProduct = getProductById(productId);
-
     if (!selectedProduct) {
       console.error('Selected product not found');
       return;
@@ -98,8 +122,8 @@ function DescriptionScreen() {
     const orderDetails = {
       id: selectedProduct.id.toString(),
       name: selectedProduct.name,
-      quantity: 1,
-      price: selectedProduct.price,
+      quantity: mainItemQuantity,
+      price: selectedProduct.price * mainItemQuantity,
       image: selectedProduct.image,
       addOns: addedAddOns || [],
       drinks: addedDrinks || [],
@@ -118,8 +142,6 @@ function DescriptionScreen() {
   if (!productId) {
     return <Text>No product ID provided</Text>;
   }
-
-  const selectedProduct = getProductById(productId);
 
   if (!selectedProduct) {
     return <Text>Product not found (ID: {productId})</Text>;
@@ -195,7 +217,10 @@ function DescriptionScreen() {
       </Animated.ScrollView>
 
       <Footer
+        quantity={mainItemQuantity}
         totalPrice={totalPrice}
+        onDecreaseQuantity={decreaseMainItemQuantity}
+        onIncreaseQuantity={increaseMainItemQuantity}
         onAddToBucket={addToBucket}
       />
     </SafeAreaView>
@@ -244,4 +269,3 @@ const styles = StyleSheet.create({
     height: 100,
   },
 });
-

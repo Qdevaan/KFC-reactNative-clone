@@ -13,69 +13,20 @@ type MenuItemProps = {
 };
 
 const MenuItem: React.FC<MenuItemProps> = ({ 
-  item: { name, description, price, image, isCompulsory }, 
+  item, 
   isSelected,
   onSelect,
-  quantity,
+  quantity = 0,
   onAdd,
   onRemove,
   type
 }) => {
+  if (!item) return null;
+
+  const { name, description, price, image, isCompulsory } = item;
+
   return (
     <View style={styles.container}>
-      <View style={styles.contentContainer}>
-        {type === 'required' ? (
-          <TouchableOpacity 
-            style={styles.radioButton} 
-            onPress={onSelect}
-            disabled={isCompulsory}
-          >
-            <View style={[styles.radio, isSelected && styles.radioSelected]} />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity 
-            style={styles.favoriteButton} 
-            onPress={() => {}} // Placeholder for favorite toggle
-            accessibilityLabel="Add to favorites"
-          >
-            <Text style={styles.favoriteIcon}></Text>
-          </TouchableOpacity>
-        )}
-        <Text style={styles.name} numberOfLines={2} ellipsizeMode="tail">{name}</Text>
-        <Text style={styles.description} numberOfLines={3} ellipsizeMode="tail">{description}</Text>
-        {type === 'optional' && (
-          <TouchableOpacity 
-            style={styles.customizeButton} 
-            onPress={() => {}} // Placeholder for customize action
-            accessibilityLabel="Customize item"
-          >
-            <Text style={styles.customizeText}>CUSTOMIZE</Text>
-            <Text style={styles.arrowIcon}>→</Text>
-          </TouchableOpacity>
-        )}
-        <View style={styles.bottomRow}>
-          <Text style={styles.price}>Rs {price.toFixed(2)}</Text>
-          {type === 'optional' && (
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <TouchableOpacity 
-                style={styles.removeButton} 
-                onPress={onRemove}
-                accessibilityLabel="Remove from bucket"
-              >
-                <Text style={styles.removeButtonText}>-</Text>
-              </TouchableOpacity>
-              <Text style={styles.quantityText}>{quantity}</Text>
-              <TouchableOpacity 
-                style={styles.addButton} 
-                onPress={onAdd}
-                accessibilityLabel="Add to bucket"
-              >
-                <Text style={styles.addButtonText}>+</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-      </View>
       <View style={styles.imageContainer}>
         <Image 
           source={{ uri: image }} 
@@ -83,17 +34,56 @@ const MenuItem: React.FC<MenuItemProps> = ({
           accessibilityLabel={`Image of ${name}`}
         />
       </View>
+      <View style={styles.contentContainer}>
+        <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
+        <Text style={styles.description} numberOfLines={2} ellipsizeMode="tail">{description}</Text>
+        <Text style={styles.price}>Rs {price.toFixed(2)}</Text>
+      </View>
+      <View style={styles.rightContainer}>
+        {type === 'optional' ? (
+          quantity === 0 ? (
+            <TouchableOpacity 
+              style={styles.addButton} 
+              onPress={onAdd}
+              accessibilityLabel="Add to bucket"
+            >
+              <Text style={styles.addButtonText}>Add</Text>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.quantityContainer}>
+              <TouchableOpacity 
+                style={styles.quantityButton} 
+                onPress={onRemove}
+                accessibilityLabel="Remove from bucket"
+              >
+                <Text style={styles.quantityButtonText}>-</Text>
+              </TouchableOpacity>
+              <Text style={styles.quantityText}>{quantity}</Text>
+              <TouchableOpacity 
+                style={styles.quantityButton} 
+                onPress={onAdd}
+                accessibilityLabel="Add to bucket"
+              >
+                <Text style={styles.quantityButtonText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          )
+        ) : (
+          <View style={styles.radioButton}>
+            <View style={[styles.radio, styles.radioSelected]} />
+          </View>
+        )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#e3e3e3',
-    borderRadius: 4,
-    padding: 16,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    backgroundColor: '#e5e5e5',
+    borderRadius: 8,
+    padding: 8,
     marginBottom: 4,
     elevation: 2,
     shadowColor: '#000',
@@ -101,108 +91,89 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  contentContainer: {
-    flex: 1,
-    marginRight: 16,
-  },
-  radioButton: {
-    marginBottom: 8,
-  },
-  radio: {
-    height: 20,
-    width: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#e53935',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  radioSelected: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: '#e53935',
-  },
-  favoriteButton: {
-    position: 'absolute',
-    right: -20,
-    top: -10,
-    zIndex: 1,
-    padding: 8,
-  },
-  favoriteIcon: {
-    fontSize: 20,
-    color: '#e53935',
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    paddingRight: 32,
-  },
-  description: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 6,
-  },
-  customizeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  customizeText: {
-    color: '#e53935',
-    fontWeight: '500',
-    marginRight: 4,
-  },
-  arrowIcon: {
-    color: '#e53935',
-    fontSize: 16,
-    paddingRight: 4,
-  },
-  bottomRow: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  price: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  addButton: {
-    backgroundColor: '#e53935',
-    padding: 8,
-    borderRadius: 4,
-    marginLeft: 4,
-  },
-  addButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  removeButton: {
-    backgroundColor: '#e53935',
-    padding: 8,
-    borderRadius: 4,
-    marginRight: 4,
-  },
-  removeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  quantityText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginHorizontal: 8,
-  },
   imageContainer: {
-    justifyContent: 'center',
+    marginRight: 12,
   },
   image: {
     width: 80,
     height: 80,
-    resizeMode: 'contain',
     borderRadius: 8,
+  },
+  contentContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+    marginRight: 12,
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  description: {
+    fontSize: 14,
+    color: '#666',
+  },
+  price: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#e53935',
+  },
+  rightContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 60,
+  },
+  addButton: {
+    backgroundColor: '#e53935',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 4,
+  },
+  addButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  quantityButton: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quantityButtonText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  quantityText: {
+    fontSize: 12,
+    color: 'black',
+    marginHorizontal: 8,
+  },
+  radioButton: {
+    borderRadius: 10,
+    padding: 2,
+    margin: 2,
+    borderColor: '#e53935',
+    borderWidth: 1,
+  },
+  radio: {
+    height: 15,
+    width: 15,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#e53935',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  radioSelected: {
+    backgroundColor: '#e53935',
   },
 });
 

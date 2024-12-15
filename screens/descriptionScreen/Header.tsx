@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text, Animated, StyleSheet } from 'react-native';
-import { MenuItem } from './types';
-import { HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT, HEADER_SCROLL_DISTANCE } from './types';
+
+const HEADER_MAX_HEIGHT = 300;
+const HEADER_MIN_HEIGHT = 120;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 type HeaderProps = {
   scrollY: Animated.Value;

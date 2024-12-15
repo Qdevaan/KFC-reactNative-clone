@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ToastAndroid, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 type FooterProps = {
   quantity: number;
@@ -7,9 +7,6 @@ type FooterProps = {
   onDecreaseQuantity: () => void;
   onIncreaseQuantity: () => void;
   onAddToBucket: () => void;
-};
-const showToast = (message: string) => {
-  ToastAndroid.show(message, ToastAndroid.SHORT);
 };
 
 export const Footer: React.FC<FooterProps> = ({
@@ -22,47 +19,47 @@ export const Footer: React.FC<FooterProps> = ({
   <View style={styles.footer}>
     <View style={styles.quantityContainer}>
       <TouchableOpacity style={styles.quantityButton} onPress={onDecreaseQuantity}>
-        <Text style={styles.quantityButtonText}>−</Text>
+        <Text style={styles.quantityButtonText}>-</Text>
       </TouchableOpacity>
       <Text style={styles.quantityText}>{quantity}</Text>
       <TouchableOpacity style={styles.quantityButton} onPress={onIncreaseQuantity}>
         <Text style={styles.quantityButtonText}>+</Text>
       </TouchableOpacity>
     </View>
-    <View style={styles.addToBucketContainer}>
-      <Text style={styles.priceText}>Rs {totalPrice}</Text>
-      <TouchableOpacity style={styles.addToBucketButton} onPress={() => { onAddToBucket(); showToast('Added to Bucket'); }}>
-        <Text style={styles.addToBucketText}>ADD TO BUCKET</Text>
-        <Text style={styles.arrowText}>≫</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity style={styles.addToBucketButton} onPress={onAddToBucket}>
+      <Text style={styles.addToBucketButtonText}>
+        Rs {totalPrice.toFixed(2)}
+      </Text>
+      <Text style={styles.addToBucketButtonText}>
+        Add to Bucket
+      </Text>
+    </TouchableOpacity>
   </View>
 );
 
 const styles = StyleSheet.create({
   footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'white',
-    padding: 8,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
   },
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 8,
   },
   quantityButton: {
     width: 20,
     height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderRadius: 4,
     borderWidth: 1,
     borderColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   quantityButtonText: {
     fontSize: 12,
@@ -74,37 +71,21 @@ const styles = StyleSheet.create({
     color: 'black',
     marginHorizontal: 8,
   },
-  addToBucketContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#ff0000',
-    borderRadius: 4,
-    overflow: 'hidden',
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  priceText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'left',
-    padding: 12,
-  },
   addToBucketButton: {
+    backgroundColor: '#e53935',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 5,
+    flex: 0.9999,
+    justifyContent: 'space-between',
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 12,
+    marginLeft: 10,
   },
-  addToBucketText: {
+  addToBucketButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
-    marginRight: 8,
-  },
-  arrowText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
+
