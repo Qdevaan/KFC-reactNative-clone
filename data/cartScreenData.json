@@ -1,7 +1,5 @@
-{
-    "cartItems": [
-      
-    ],
+{ 
+    //data for recommended items on cart screen
     "recommendations": [
       {
        "id": 100,

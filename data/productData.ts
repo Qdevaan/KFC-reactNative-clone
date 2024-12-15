@@ -1,4 +1,4 @@
-import { MenuData } from './types';
+import { MenuData } from './menuDataTypes';
 
 export const menuData: MenuData = {
   menuItems: [

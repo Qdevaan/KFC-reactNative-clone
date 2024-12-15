@@ -17,7 +17,7 @@ import RecommendationCard from './RecommendationCard';
 import Header from '../menuScreen/components/Header';
 import BottomBar from './BottomBar';
 import { CartProvider, useCart } from './CartContext';
-import cartData from './data.json';
+import cartData from '../../data/cartScreenData.json';
 
 export default function App() {
   return (

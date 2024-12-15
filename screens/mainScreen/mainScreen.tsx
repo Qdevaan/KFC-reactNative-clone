@@ -8,7 +8,7 @@ import BestSellerCard from './BestSellerCard';
 import TopDealCard from './TopDealCard';
 import DeliveryToggle from './DeliveryToggle';
 import SideMenu from './SideMenu';
-import data from './data.json';
+import data from '../../data/mainScreenData.json';
 
 export default function KFCHome() {
   const navigation = useNavigation();

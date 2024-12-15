@@ -1,6 +1,8 @@
 {
-  "location": "Qdevaan",
+  //categories holds the names of the categories of the menu items on the menu screen
   "categories": ["Everyday Value", "Ala-Carte-&-Combos", "Signature-Boxes","Promotions",  "Sharing", "Snacks-&-Beverages"],
+
+  //everydayvalueitems holds the menu items that are in the Everyday Value category
   "everydayvalueitems": [
     {
       "id": 100,
@@ -18,6 +20,8 @@
     }
     
   ],
+
+  //alacartecombositems holds the menu items that are in the Ala-Carte & Combos category
   "alacartecombositems": [
     {
       "id": 200,
@@ -28,6 +32,8 @@
     }
    
   ],
+
+  //signatureboxesitems holds the menu items that are in the Signature Boxes category
   "signatureboxesitems": [
     {
       "id": 300,
@@ -37,6 +43,8 @@
       "image": "https://www.kfcpakistan.com/images/afc536d0-ff99-11ed-a006-17c81341cbe8-Signaturebox-2023-05-31095826.png"
     }
   ],
+
+  //promotionsitems holds the menu items that are in the Promotions category
   "promotionsitems": [
     {
       "id": 400,
@@ -46,6 +54,8 @@
       "image": "https://www.kfcpakistan.com/images/a9b4fb90-8d82-11ef-ae4a-7712e9c1a6fb-Thumbnail590x4802copy-2024-10-18185620.png"
     }
   ],
+
+  //sharingitems holds the menu items that are in the Sharing category
   "sharingitems": [
     {
       "id": 500,
@@ -55,6 +65,8 @@
       "image": "https://www.kfcpakistan.com/images/afc4e8b0-ff99-11ed-8640-872ee63b5da0-Sharing-2023-05-31095826.png"
     }
   ],
+
+  //snacksbeveragesitems holds the menu items that are in the Snacks & Beverages category
   "snacksbeveragesitems": [
     {
       "id": 600,
@@ -71,6 +83,8 @@
       "image": "https://www.kfcpakistan.com/images/fea54530-3eed-11ef-b424-552aa36b144a-Pepsi-345ml_variant_0-2024-07-10185537.png"
     }
   ],
+
+  //midnightitems holds the menu items that are in the Midnight category
   "midnightitems": [
     {
       "id": 800,

@@ -4,8 +4,9 @@ import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { MenuItem } from './MenuItem';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { HEADER_MAX_HEIGHT, MenuItem as MenuItemType } from './types';
-import { menuData } from './menuData';
+import { HEADER_MAX_HEIGHT } from './types';
+import { MenuItem as MenuItemType } from '../../data/menuDataTypes';
+import { menuData } from '../../data/productData';
 import { useCart , CartProvider } from '../cartScreen/CartContext';
 
 type RouteParams = {

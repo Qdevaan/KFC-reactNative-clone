@@ -3,7 +3,7 @@ import { View, StyleSheet, SafeAreaView, StatusBar, Text, FlatList } from 'react
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { supabase } from '../../lib/supabase';
 import Header from './components/Header';
-import data from './data.json';
+import data from '../../data/menuScreenData.json';
 import DeliveryToggle from '../mainScreen/DeliveryToggle';
 import CategoryTabs from './components/CategoryTabs';
 import MenuItem from './components/MenuItem';
