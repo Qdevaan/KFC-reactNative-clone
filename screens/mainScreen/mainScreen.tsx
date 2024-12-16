@@ -9,6 +9,8 @@ import TopDealCard from './TopDealCard';
 import DeliveryToggle from './DeliveryToggle';
 import SideMenu from './SideMenu';
 import { promotions, menuCategories, bestSellers, topDeals, getProductsByIds } from '../../data/menuData';
+import Carousel from './Carousel';
+import { useCart } from '../cartScreen/CartContext';
 
 export default function KFCHome() {
   const navigation = useNavigation();
@@ -19,6 +21,7 @@ export default function KFCHome() {
   const [isDelivery, setIsDelivery] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const pan = useRef(new Animated.ValueXY()).current;
+  const { cart } = useCart();
 
   let isDragging = false;
 
@@ -137,13 +140,7 @@ const panResponder = PanResponder.create({
         <View style={styles.sectionCard}>
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>What's new</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {promotions.map((promo) => (
-                <TouchableOpacity key={promo.id} onPress={() => showToast(`Clicked on promotion ${promo.id}`)}>
-                  <PromotionCard {...promo} />
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+            <Carousel data={promotions} />
           </View>
         </View>
 
@@ -254,33 +251,35 @@ const panResponder = PanResponder.create({
 
       {/* Moveable Bucket Icon */}
       <Animated.View
-    style={{
-      transform: [{ translateX: pan.x }, { translateY: pan.y }],
-      position: 'absolute',
-      bottom: 30,
-      right: 16,
-    }}
-    {...panResponder.panHandlers}
-  >
-    <TouchableOpacity
-      style={styles.bucketIcon}
-      onPress={() => {
-        if (!isDragging) {
-          // navigation.navigate('Bucket');
-          navigation.navigate('Bucket', { 
-            isDelivery: isDelivery,
-            username: userProfile?.full_name || userProfile?.username || 'Guest',
-          });
-        }
-      }}
-      accessibilityLabel="View cart"
-    >
-      <Image 
-        source={require('../assets/bucket-icon.png')}
-        style={{ width: 65, height: 65 }}
-      />
-    </TouchableOpacity>
-  </Animated.View>
+        style={{
+          transform: [{ translateX: pan.x }, { translateY: pan.y }],
+          position: 'absolute',
+          bottom: 30,
+          right: 16,
+        }}
+        {...panResponder.panHandlers}
+      >
+        <TouchableOpacity
+          style={styles.bucketIcon}
+          onPress={() => {
+            if (!isDragging) {
+              navigation.navigate('Bucket', { 
+                isDelivery: isDelivery,
+                username: userProfile?.full_name || userProfile?.username || 'Guest',
+              });
+            }
+          }}
+          accessibilityLabel="View cart"
+        >
+          <Image 
+            source={require('../assets/bucket-icon.png')}
+            style={{ width: 65, height: 65 }}
+          />
+          {cart.length > 0 && (
+            <View style={styles.redDot} />
+          )}
+        </TouchableOpacity>
+      </Animated.View>
 
       {/* Side Menu Overlay */}
       {isSideMenuOpen && (
@@ -539,6 +538,15 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     zIndex: 998,
+  },
+  redDot: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: 'red',
   },
 });
 

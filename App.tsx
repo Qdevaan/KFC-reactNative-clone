@@ -11,6 +11,7 @@ import AboutScreen from './screens/accountScreens/AboutScreen';
 import LoginScreen from './screens/accountScreens/LoginScreen';
 import AccountScreen from './screens/accountScreens/AccountScreen';
 import * as ImagePicker from 'expo-image-picker';
+import { CartProvider } from './screens/cartScreen/CartContext';
 
 const Stack = createStackNavigator();
 
@@ -63,28 +64,31 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {session ? (
-          <>
-            <Stack.Screen name="Home" component={HomeScreen} initialParams={{ user: session.user, userProfile }} />
-            <Stack.Screen name="Menu" component={MenuScreen} />
-            <Stack.Screen name="Description" component={DescriptionScreen} />
-            <Stack.Screen name="Bucket" component={BucketScreen} />
-            <Stack.Screen name="About" component={AboutScreen} />
-            <Stack.Screen name="Account" component={AccountScreen} />
-          </>
-        ) : (
-          <>
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Menu" component={MenuScreen} />
-            <Stack.Screen name="Description" component={DescriptionScreen} />
-            <Stack.Screen name="Bucket" component={BucketScreen} />
-            <Stack.Screen name="About" component={AboutScreen} />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <CartProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {session ? (
+            <>
+              <Stack.Screen name="Home" component={HomeScreen} initialParams={{ user: session.user, userProfile }} />
+              <Stack.Screen name="Menu" component={MenuScreen} />
+              <Stack.Screen name="Description" component={DescriptionScreen} />
+              <Stack.Screen name="Bucket" component={BucketScreen} />
+              <Stack.Screen name="About" component={AboutScreen} />
+              <Stack.Screen name="Account" component={AccountScreen} />
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Menu" component={MenuScreen} />
+              <Stack.Screen name="Description" component={DescriptionScreen} />
+              <Stack.Screen name="Bucket" component={BucketScreen} />
+              <Stack.Screen name="About" component={AboutScreen} />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </CartProvider>
   );
 }
+

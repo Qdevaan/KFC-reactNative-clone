@@ -1,9 +1,12 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 
 type PromotionCardProps = {
   image: string;
 };
+
+const { width } = Dimensions.get('window');
+const CARD_WIDTH = width - 32; // Full width minus padding
 
 export default function PromotionCard({ image }: PromotionCardProps) {
   return (
@@ -15,16 +18,17 @@ export default function PromotionCard({ image }: PromotionCardProps) {
 
 const styles = StyleSheet.create({
   container: {
-    width: 330,
-    backgroundColor: 'white',
+    width: CARD_WIDTH,
+    // backgroundColor: 'white',
     borderRadius: 8,
-    overflow: 'hidden',
-    marginRight: 16,
-    marginBottom: 16,
+    // overflow: 'hidden',
+    // marginRight: 16,
+    // marginBottom: 16,
   },
   image: {
+    borderRadius: 4,
     width: '100%',
-    height: 150,
+    height: 135,
     resizeMode: 'cover',
   },
   content: {
@@ -42,3 +46,4 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 });
+

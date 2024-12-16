@@ -56,7 +56,7 @@ export const menuCategories: MenuCategory[] = [
 
 export const bestSellers: number[] = [100,101, 200, 300];
 export const topDeals: number[] = [400, 500, 100, 200];
-export const recommendations: number[] = [100, 300, 600,101];
+export const recommendations: number[] = [100, 300, 600,];
 
 export const menuCategoryItems: { [key: string]: number[] } = {
   "Everyday Value": [100, 101],
