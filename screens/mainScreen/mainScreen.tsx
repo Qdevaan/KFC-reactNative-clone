@@ -383,6 +383,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 40,
     resizeMode: 'contain',
+    // backgroundColor: 'white',
   },
   sideMenuOverlay: {
     ...StyleSheet.absoluteFillObject,
