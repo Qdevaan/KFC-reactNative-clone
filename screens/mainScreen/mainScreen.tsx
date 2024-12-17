@@ -3,14 +3,14 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { View, Text, ScrollView, ToastAndroid, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar, Image, Animated, PanResponder } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase';
-import PromotionCard from './PromotionCard';
 import BestSellerCard from './BestSellerCard';
 import TopDealCard from './TopDealCard';
 import DeliveryToggle from './DeliveryToggle';
 import SideMenu from './SideMenu';
-import { promotions, menuCategories, bestSellers, topDeals, getProductsByIds } from '../../data/menuData';
+import { promotions, bestSellers, topDeals, getProductsByIds } from '../../data/menuData';
 import Carousel from './Carousel';
 import { useCart } from '../cartScreen/CartContext';
+import MenuSection from './menuSection';
 
 export default function KFCHome() {
   const navigation = useNavigation();
@@ -149,74 +149,9 @@ const panResponder = PanResponder.create({
           <Text style={styles.reorderButtonText}>REORDER</Text>
         </TouchableOpacity>
 
-        {/* Menu Categories */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Explore Menu</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Menu',{ 
-                categoryId: menuCategories[0].id, 
-                isDelivery: isDelivery,
-                username: userProfile?.full_name || userProfile?.username || 'Guest'
-              })}>
-              <Text style={styles.viewAllText}>VIEW ALL</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.container2, { flex: 0.1 }]}>
-            {/* View 1: Main Card */}
-            <View style={styles.singleCardView}>
-              <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Menu', { 
-                categoryId: menuCategories[0].id, 
-                isDelivery: isDelivery,
-                username: userProfile?.full_name || userProfile?.username || 'Guest'
-              })}>
-                <Text style={styles.title}>{menuCategories[0].title}</Text>
-                <Image source={{ uri: menuCategories[0].image }} style={styles.image} />
-              </TouchableOpacity>
-            </View>
+        {/* Menu Section */}
+        <MenuSection isDelivery={isDelivery} username={userProfile?.full_name || userProfile?.username || 'Guest'} />
 
-            {/* View 2: Two menuCategories */}
-            <View style={styles.doubleCardView}>
-              {menuCategories.slice(1, 3).map((card) => (
-                <TouchableOpacity
-                  key={card.id}
-                  style={styles.card}
-                  onPress={() => {
-                    navigation.navigate('Menu', { 
-                      categoryId: card.id, 
-                      isDelivery: isDelivery,
-                      username: userProfile?.full_name || userProfile?.username || 'Guest'
-                    });
-                    console.log(`Clicked on card ${card.id}`);
-                  }}
-                >
-                  <Text style={styles.title}>{card.title}</Text>
-                  <Image source={{ uri: card.image }} style={styles.image} />
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            {/* View 3: Two menuCategories */}
-            <View style={styles.doubleCardView}>
-              {menuCategories.slice(3).map((card) => (
-                <TouchableOpacity
-                  key={card.id}
-                  style={styles.card}
-                  onPress={() => {
-                    navigation.navigate('Menu', { 
-                      categoryId: card.id, 
-                      isDelivery: isDelivery,
-                      username: userProfile?.full_name || userProfile?.username || 'Guest'
-                    });
-                    console.log(`Clicked on card ${card.id}`);
-                  }}
-                >
-                  <Text style={styles.title}>{card.title}</Text>
-                  <Image source={{ uri: card.image }} style={styles.image} />
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        </View>
 
         {/* Best Sellers */}
         <View style={styles.section}>
@@ -310,6 +245,7 @@ const panResponder = PanResponder.create({
         userProfile={userProfile}
         navigation={navigation}
       />
+      
     </SafeAreaView>
   );
 }
@@ -344,21 +280,6 @@ const styles = StyleSheet.create({
     width: 60,
     height: 30,
   },
-  deliveryToggle: {
-    flexDirection: 'row',
-    padding: 16,
-    backgroundColor: 'white',
-  },
-  toggleButton: {
-    flex: 1,
-    padding: 10,
-    alignItems: 'center',
-    backgroundColor: '#f3f4f6',
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    borderRadius: 4,
-    marginHorizontal: 4,
-  },
   content: {
     flex: 1,
   },
@@ -381,7 +302,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
     marginBottom: 6,
   },
   viewAllText: {
@@ -389,17 +310,11 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold',
   },
-  menuGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-  },
   reorderButton: {
     backgroundColor: '#dc2626',
     padding: 10,
     borderRadius: 3,
-    marginHorizontal: 6,
+    marginHorizontal: 12,
     marginBottom: 6,
   },
   reorderButtonText: {
@@ -408,34 +323,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   footer: {
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'white',
-    borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
-    padding: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  footerTitle: {
-    fontWeight: 'bold',
+    marginTop: 10,
+    marginBottom: 10,
+    paddingHorizontal: 16,
   },
   footerSubtitle: {
     fontSize: 12,
     color: '#6b7280',
-  },
-  orderNowButton: {
-    borderWidth: 1,
-    borderColor: '#dc2626',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 4,
-  },
-  orderNowButtonText: {
-    color: '#dc2626',
-    fontWeight: 'bold',
   },
   bucketIcon: {
     // backgroundColor: '#dc2626',
@@ -453,50 +347,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingBottom: -5,
-  },
-  singleCardView: {
-    flex: 1,
-    marginRight: 3,
-    paddingTop: 5,
-    marginLeft: 2,
-    justifyContent: "center",
-    alignItems: "center",
-    borderStyle: 'dotted',
-    borderColor: 'grey',
-    height: '100%',
-    paddingBottom: -5,
-  },
-  doubleCardView: {
-    paddingTop: 5,
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-between",
-    marginRight: -5,
-    marginLeft: 5,
-  },
-  card: {
-    flex: 1,
-    width: "95%",
-    marginBottom: 5,
-    marginHorizontal: -5,
-    paddingHorizontal: -5,
-    borderRadius: 3,
-    alignItems: "center",
-    borderStyle: 'dotted',
-    borderColor: 'grey',
-    borderWidth: 1,
-  },
-  image: {
-    width: 90,
-    height: 90,
-    resizeMode: "contain",
-    marginTop: 'auto',
-  },
-  title: {
-    fontSize: 16,
-    textAlign: "center",
-    marginTop: 10,
-    fontWeight: "bold",
   },
   header2: {
     flexDirection: 'row',
@@ -549,4 +399,3 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
   },
 });
-
