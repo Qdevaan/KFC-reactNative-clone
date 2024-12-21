@@ -8,17 +8,41 @@ import {
   Image,
   SafeAreaView,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import OTPVerificationScreen from './OTPVerificationScreen';
+import { supabase } from '../../lib/supabase';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [imageLoaded, setImageLoaded] = useState(false);
   const [showOtpScreen, setShowOtpScreen] = useState(false);
 
-  const handleSendOTP = () => {
-    // Handle OTP sending logic here
-    console.log('Sending OTP to:', email);
-    setShowOtpScreen(true);
+  const handleSendOTP = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email,
+      });
+      if (error) throw error;
+      setShowOtpScreen(true);
+    } catch (error) {
+      console.error('Error sending OTP:', error.message);
+      // You might want to show an error message to the user here
+    }
+  };
+
+  const handleSignUp = async () => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: email,
+        password: 'PLACEHOLDER_PASSWORD', // We'll update this later in the account screen
+      });
+      if (error) throw error;
+      setShowOtpScreen(true);
+    } catch (error) {
+      console.error('Error signing up:', error.message);
+      // You might want to show an error message to the user here
+    }
   };
 
   useEffect(() => {
@@ -38,7 +62,7 @@ const LoginScreen = ({ navigation }) => {
 
       <View style={styles.content}>
         {/* Check with a remote URL for GIF */}
-        <Image
+        <FastImage
           source={require('../assets/login.gif')} // Test with a known valid local GIF
           style={[styles.animation, { borderWidth: 1, borderColor: 'red' }]} // Added border for debugging
           resizeMode="contain" // Ensure GIF fits well within the container
@@ -70,6 +94,12 @@ const LoginScreen = ({ navigation }) => {
           onPress={handleSendOTP}
         >
           <Text style={styles.buttonText}>Send OTP</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={handleSignUp}
+        >
+          <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
 

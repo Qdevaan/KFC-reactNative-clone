@@ -1,174 +1,129 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaView, ScrollView, Platform, Modal } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Picker } from '@react-native-picker/picker';
-import * as ImagePicker from 'expo-image-picker';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { supabase } from '../../lib/supabase';
 
-const EditProfileScreen = () => {
-  // Ask for permission to access gallery
+const AccountScreen = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    email: '',
+    password: '',
+  });
+
   useEffect(() => {
-    const getPermissions = async () => {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        alert('Permission to access the gallery is required!');
-      }
-    };
-    getPermissions();
+    fetchUserData();
   }, []);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaType.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const fetchUserData = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
 
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      setFormData({ ...formData, profileImage: result.assets[0].uri });
+      if (error) {
+        console.error('Error fetching user data:', error.message);
+      } else if (data) {
+        setFormData({
+          ...formData,
+          firstName: data.first_name || '',
+          lastName: data.last_name || '',
+          phone: data.phone || '',
+          email: user.email || '',
+        });
+      }
     }
   };
 
-  const [formData, setFormData] = useState({
-    firstName: 'Muhammad',
-    lastName: 'Ahmad',
-    phone: '+92 3083872646',
-    email: 'qdevaan@gmail.com',
-    gender: 'Male',
-    dateOfBirth: new Date(2000, 1, 2),
-    profileImage: '',
-  });
+  const handleSave = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          phone: formData.phone,
+          updated_at: new Date(),
+        });
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
+      if (error) {
+        console.error('Error saving user data:', error.message);
+      } else {
+        console.log('User data saved successfully');
+      }
 
-  const onDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || formData.dateOfBirth;
-    setShowDatePicker(Platform.OS === 'ios');
-    setFormData({ ...formData, dateOfBirth: currentDate });
-  };
+      if (formData.password) {
+        const { error } = await supabase.auth.updateUser({
+          password: formData.password,
+        });
 
-  const formatDate = (date) => {
-    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+        if (error) {
+          console.error('Error updating password:', error.message);
+        } else {
+          console.log('Password updated successfully');
+        }
+      }
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Text style={styles.title}>Edit Profile</Text>
-
-        {/* Profile Image */}
-        <TouchableOpacity style={styles.profileImageContainer} onPress={pickImage}>
-          <Image
-            source={{ uri: formData.profileImage || 'https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg' }}
-            style={styles.profileImage}
-          />
-        </TouchableOpacity>
-
-        {/* Form Fields */}
+        <Text style={styles.title}>Account Information</Text>
         <View style={styles.form}>
-          {/* First Name and Last Name in the same row */}
-          <View style={styles.nameRow}>
-            <View style={[styles.inputGroup, styles.halfWidth]}>
-              <Text style={styles.label}>First Name</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.firstName}
-                onChangeText={(text) => setFormData({ ...formData, firstName: text })}
-              />
-              <Text style={styles.asterisk}>*</Text>
-            </View>
-            <View style={[styles.inputGroup, styles.halfWidth]}>
-              <Text style={styles.label}>Last Name</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.lastName}
-                onChangeText={(text) => setFormData({ ...formData, lastName: text })}
-              />
-              <Text style={styles.asterisk}>*</Text>
-            </View>
-          </View>
-
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Phone Number (3XXXXXXXX)</Text>
+            <Text style={styles.label}>First Name</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.firstName}
+              onChangeText={(text) => setFormData({ ...formData, firstName: text })}
+            />
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Last Name</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.lastName}
+              onChangeText={(text) => setFormData({ ...formData, lastName: text })}
+            />
+          </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Phone Number</Text>
             <TextInput
               style={styles.input}
               value={formData.phone}
-              keyboardType="phone-pad"
               onChangeText={(text) => setFormData({ ...formData, phone: text })}
+              keyboardType="phone-pad"
             />
-            <Text style={styles.asterisk}>*</Text>
           </View>
-
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Email</Text>
             <TextInput
               style={styles.input}
               value={formData.email}
-              keyboardType="email-address"
               onChangeText={(text) => setFormData({ ...formData, email: text })}
+              keyboardType="email-address"
+              editable={false}
             />
-            <Text style={styles.asterisk}>*</Text>
           </View>
-
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Select Gender</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={formData.gender}
-                style={styles.picker}
-                onValueChange={(itemValue) => setFormData({ ...formData, gender: itemValue })}
-              >
-                <Picker.Item label="Male" value="Male" />
-                <Picker.Item label="Female" value="Female" />
-                <Picker.Item label="Other" value="Other" />
-              </Picker>
-            </View>
-            <Text style={styles.asterisk}>*</Text>
+            <Text style={styles.label}>New Password (optional)</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.password}
+              onChangeText={(text) => setFormData({ ...formData, password: text })}
+              secureTextEntry
+            />
           </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Date of Birth</Text>
-            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-              <View style={styles.dateContainer}>
-                <Text style={styles.dateText}>{formatDate(formData.dateOfBirth)}</Text>
-                <Text style={styles.calendarIcon}>📅</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {/* Save Button */}
-          <TouchableOpacity style={styles.saveButton}>
+          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
         </View>
-
-        {/* Date Picker Modal */}
-        {showDatePicker && (
-          <Modal
-            transparent={true}
-            animationType="slide"
-            visible={showDatePicker}
-            onRequestClose={() => setShowDatePicker(false)}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={formData.dateOfBirth}
-                  mode="date"
-                  display="default"
-                  onChange={onDateChange}
-                />
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={() => setShowDatePicker(false)}
-                >
-                  <Text style={styles.closeButtonText}>Close</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
-        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -181,117 +136,44 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   title: {
-    backgroundColor: 'white',
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: 'bold',
-    paddingVertical: 8,
-    textAlign: 'left',
+    marginVertical: 20,
+    textAlign: 'center',
   },
-  profileImageContainer: {
-    alignItems: 'center',
-    marginVertical: 8,
-  },
-  profileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-  },
-  nameRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  halfWidth: {
-    width: '48%',
+  form: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 16,
   },
   inputGroup: {
-    marginBottom: 12,
+    marginBottom: 16,
   },
   label: {
-    fontSize: 11,
-    color: '#666',
-    marginBottom: 2,
+    fontSize: 14,
+    marginBottom: 8,
+    color: '#333',
   },
   input: {
-    borderRadius: 4,
-    padding: 10,
-    fontSize: 14,
     borderWidth: 1,
     borderColor: '#ddd',
-  },
-  asterisk: {
-    color: '#E4002B',
-    position: 'absolute',
-    right: 8,
-    top: 30,
-  },
-  pickerContainer: {
-    height: 40,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  picker: {
-    top: -7,
-  },
-  dateContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     borderRadius: 4,
     padding: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  dateText: {
-    fontSize: 14,
-  },
-  calendarIcon: {
-    fontSize: 20,
+    fontSize: 16,
   },
   saveButton: {
     backgroundColor: '#E4002B',
-    marginTop: 1,
-    padding: 10,
+    padding: 12,
     borderRadius: 4,
     alignItems: 'center',
+    marginTop: 16,
   },
   saveButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalView: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  closeButton: {
-    backgroundColor: '#E4002B',
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    marginTop: 15,
-  },
-  closeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
 });
 
-export default EditProfileScreen;
+export default AccountScreen;
+

@@ -8,6 +8,8 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
+import { supabase } from '../../lib/supabase';
+import { useNavigation } from '@react-navigation/native';
 
 const { height } = Dimensions.get('window');
 
@@ -16,6 +18,7 @@ const OTPVerificationScreen = ({ isVisible, onClose, email }) => {
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
   const slideAnim = useRef(new Animated.Value(height)).current;
   const inputRefs = useRef([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (isVisible) {
@@ -57,10 +60,34 @@ const OTPVerificationScreen = ({ isVisible, onClose, email }) => {
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   };
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     const enteredOtp = otp.join('');
-    console.log('Verifying OTP:', enteredOtp);
-    // Add your OTP verification logic here
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: enteredOtp,
+        type: 'email',
+      });
+      if (error) throw error;
+      // Navigate to the account screen
+      navigation.navigate('Account');
+    } catch (error) {
+      console.error('Error verifying OTP:', error.message);
+      // You might want to show an error message to the user here
+    }
+  };
+
+  const handleResendOTP = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+      });
+      if (error) throw error;
+      setTimeLeft(300); // Reset the timer
+    } catch (error) {
+      console.error('Error resending OTP:', error.message);
+      // You might want to show an error message to the user here
+    }
   };
 
   return (
@@ -94,7 +121,7 @@ const OTPVerificationScreen = ({ isVisible, onClose, email }) => {
         <TouchableOpacity style={styles.button} onPress={handleVerify}>
           <Text style={styles.buttonText}>Verify OTP</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.resendButton}>
+        <TouchableOpacity style={styles.resendButton} onPress={handleResendOTP}>
           <Text style={styles.resendButtonText}>Resend OTP</Text>
         </TouchableOpacity>
       </View>
@@ -183,3 +210,4 @@ const styles = StyleSheet.create({
 });
 
 export default OTPVerificationScreen;
+
