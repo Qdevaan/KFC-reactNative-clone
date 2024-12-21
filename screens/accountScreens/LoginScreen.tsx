@@ -8,14 +8,17 @@ import {
   Image,
   SafeAreaView,
 } from 'react-native';
+import OTPVerificationScreen from './OTPVerificationScreen';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [showOtpScreen, setShowOtpScreen] = useState(false);
 
   const handleSendOTP = () => {
     // Handle OTP sending logic here
     console.log('Sending OTP to:', email);
+    setShowOtpScreen(true);
   };
 
   useEffect(() => {
@@ -69,6 +72,12 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Send OTP</Text>
         </TouchableOpacity>
       </View>
+
+      <OTPVerificationScreen
+        isVisible={showOtpScreen}
+        onClose={() => setShowOtpScreen(false)}
+        email={email}
+      />
     </SafeAreaView>
   );
 };
@@ -147,3 +156,4 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
+
