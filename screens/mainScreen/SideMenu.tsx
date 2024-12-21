@@ -56,7 +56,7 @@ const SideMenu = ({ isOpen, onClose, onLogin, user, userProfile, navigation }) =
       >
         <View style={styles.header}>
           {user ? (
-            <TouchableOpacity style={styles.userInfo} onPress={() => navigation.navigate('Account')}>
+            <TouchableOpacity style={styles.userInfo} onPress={() => navigation.navigate('About')}>
               <Image 
           source={{ uri: userProfile?.avatar_url ? supabase.storage.from('avatars').getPublicUrl(userProfile.avatar_url).data.publicUrl : DEFAULT_IMAGE_URL }} 
           style={styles.avatar}
@@ -125,17 +125,23 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
   },
   userInfo: {
+    marginTop: 20,
+    flexDirection: 'row',
+    // justifyContent: 'space-around',
     alignItems: 'center',
     marginBottom: 20,
   },
   avatar: {
-    width: 80,
-    height: 80,
+    position: 'absolute',
+    left: 8,
+    width: 50,
+    height: 50,
     borderRadius: 40,
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   userName: {
-    fontSize: 18,
+    left: 60,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   loginPrompt: {

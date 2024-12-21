@@ -1,25 +1,24 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  Platform,
-  Modal,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, SafeAreaView, ScrollView, Platform, Modal } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
-
 import * as ImagePicker from 'expo-image-picker';
 
 const EditProfileScreen = () => {
+  // Ask for permission to access gallery
+  useEffect(() => {
+    const getPermissions = async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Permission to access the gallery is required!');
+      }
+    };
+    getPermissions();
+  }, []);
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: [ImagePicker.MediaType.Images],
+      mediaTypes: ImagePicker.MediaType.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -29,6 +28,7 @@ const EditProfileScreen = () => {
       setFormData({ ...formData, profileImage: result.assets[0].uri });
     }
   };
+
   const [formData, setFormData] = useState({
     firstName: 'Muhammad',
     lastName: 'Ahmad',
@@ -37,7 +37,6 @@ const EditProfileScreen = () => {
     gender: 'Male',
     dateOfBirth: new Date(2000, 1, 2),
     profileImage: '',
-    
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -182,33 +181,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   title: {
-    fontSize: 20,
+    backgroundColor: 'white',
+    fontSize: 16,
     fontWeight: 'bold',
-    paddingVertical: 12,
-    textAlign: 'center',
+    paddingVertical: 8,
+    textAlign: 'left',
   },
   profileImageContainer: {
     alignItems: 'center',
-    marginVertical: 16,
+    marginVertical: 8,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-  },
-  editIconContainer: {
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    padding: 5,
-  },
-  editIcon: {
-    fontSize: 20,
-  },
-  form: {
-    paddingVertical: 8,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
   nameRow: {
     flexDirection: 'row',
@@ -221,13 +207,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   label: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#666',
     marginBottom: 2,
   },
   input: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
+    borderRadius: 4,
     padding: 10,
     fontSize: 14,
     borderWidth: 1,
@@ -240,36 +225,34 @@ const styles = StyleSheet.create({
     top: 30,
   },
   pickerContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
+    height: 40,
+    borderRadius: 4,
     borderWidth: 1,
     borderColor: '#ddd',
   },
   picker: {
-    height: 50,
-    width: '100%',
+    top: -7,
   },
   dateContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 12,
+    borderRadius: 4,
+    padding: 8,
     borderWidth: 1,
     borderColor: '#ddd',
   },
   dateText: {
-    fontSize: 16,
+    fontSize: 14,
   },
   calendarIcon: {
     fontSize: 20,
   },
   saveButton: {
     backgroundColor: '#E4002B',
-    marginTop: 16,
-    padding: 14,
-    borderRadius: 8,
+    marginTop: 1,
+    padding: 10,
+    borderRadius: 4,
     alignItems: 'center',
   },
   saveButtonText: {
@@ -312,4 +295,3 @@ const styles = StyleSheet.create({
 });
 
 export default EditProfileScreen;
-
